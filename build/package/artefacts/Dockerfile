@@ -1,0 +1,82 @@
+# Copyright 2020 Paul Sitoh
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# node build phase
+# In this phase, we pull artefacts to build ReactJS webapp for
+# development
+FROM node:13.10.1 as nodebuild
+
+WORKDIR /opt
+
+COPY ./web/reactjs/package-lock.json /opt/package-lock.json
+COPY ./web/reactjs/package.json /opt/package.json
+COPY ./web/reactjs/webpack /opt/webpack
+COPY ./web/reactjs/.babelrc /opt/.babelrc
+COPY ./web/reactjs/images /opt/images
+COPY ./web/reactjs/src /opt/src
+
+RUN npm install && npm audit fix && npm run build
+
+# Go test phase
+# Utilising a go packaging tool github.com/GeertJohan/go.rice
+# the web artefacts is packaged into a file name rice-box.go.
+# Go builder then generates a version for linux platform.
+FROM golang:1.13.3 as gotest
+
+WORKDIR /opt
+
+COPY ./cmd ./cmd
+COPY ./internal ./internal
+COPY ./build/package/go-rice.sh ./build/go-rice.sh
+COPY --from=nodebuild /opt/public ./web
+
+COPY ./go.mod ./go.mod
+COPY ./go.sum ./go.sum
+
+RUN go get github.com/GeertJohan/go.rice/rice && \
+    ./build/go-rice.sh && \
+    go mod download && \
+    go test -v goweb/internal/usermgmt && \
+    go test -v goweb/cmd/goreact/cli
+
+# Go build phase
+# Utilising a go packaging tool github.com/GeertJohan/go.rice
+# the web artefacts is packaged into a file name rice-box.go.
+# Go builder then generates a version for linux platform.
+FROM golang:1.13.3 as gobuild
+
+WORKDIR /opt
+
+COPY --from=gotest /opt/cmd ./cmd
+COPY --from=gotest /opt/internal ./internal
+COPY --from=gotest /opt/build/go-rice.sh ./build/go-rice.sh
+COPY --from=gotest /opt/web ./web
+
+COPY --from=gotest /opt/go.mod ./go.mod
+COPY --from=gotest /opt/go.sum ./go.sum
+
+RUN go get github.com/GeertJohan/go.rice/rice && \
+    ./build/go-rice.sh && \
+    go mod download && \
+    env GOOS=linux GOARCH=amd64 go build -o ./build/package/linux/goreact ./cmd/goreact && \
+    env GOOS=darwin GOARCH=amd64 go build -o ./build/package/macOS/goreact ./cmd/goreact && \
+    env GOOS=windows GOARCH=amd64 go build -o ./build/package/windows/goreact.exe ./cmd/goreact && \
+    env CGO_ENABLED=0 env GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o ./build/package/container/goreact ./cmd/goreact
+
+# Pack linux artefact into scratch container
+FROM scratch
+
+COPY --from=gobuild /opt/build/package/container/goreact /goreact
+
+CMD ["/goreact"]
