@@ -12,12 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package cli
 
-import (
-	"goweb/cmd/goreact/cli"
-)
+import "testing"
 
-func main() {
-	cli.Execute()
+func TestRootCmdName(t *testing.T) {
+	expected := "hlsadmin"
+	got := rootCmd.Use
+	if expected != got {
+		t.Errorf("Expected: %v Got: %v", expected, got)
+	}
 }

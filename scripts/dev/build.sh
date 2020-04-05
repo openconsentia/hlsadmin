@@ -14,8 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-export REACT_IMAGE_NAME=paulwizviz/go-react
-export REST_IMAGE_NAME=paulwizviz/go-rest
+export REACT_IMAGE_NAME=paulwizviz/hlsadmin-react
+export REST_IMAGE_NAME=paulwizviz/hlsadmin-rest
 export IMAGE_TAG=dev
 
 COMMAND="$1"
