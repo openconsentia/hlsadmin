@@ -9,7 +9,7 @@ services:
         ports:
             - 80:80
         networks:
-            - goweb_e2e_network
+            - hlsadmin_e2e_network
 
     # TODO: ADD database to mock your authentication server
     # db:
@@ -23,8 +23,7 @@ services:
     #         - POSTGRES_PASSWORD=adminpw
     #     working_dir: /opt
     #     networks:
-    #         - goweb_e2e_network
-
+    #         - hlsadmin_e2e_network
 
 networks:
-    goweb_e2e_network:
+    hlsadmin_e2e_network:

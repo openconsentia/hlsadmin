@@ -15,7 +15,7 @@ services:
             - NOXY_API_HOST=rest
             - NOXY_API_PORT=9000
         networks:
-            - goweb_dev_network
+            - hlsadmin_dev_network
 
     react:
         image: ${REACT_IMAGE_NAME}:${IMAGE_TAG}
@@ -27,7 +27,7 @@ services:
         volumes:
             - ../../web/reactjs/src:/opt/src
         networks:
-            - goweb_dev_network
+            - hlsadmin_dev_network
 
     rest:
         image: ${REST_IMAGE_NAME}:${IMAGE_TAG}
@@ -38,7 +38,7 @@ services:
         ports:
             - 9000:9000
         networks:
-            - goweb_dev_network
+            - hlsadmin_dev_network
 
 networks:
-    goweb_dev_network:
+    hlsadmin_dev_network:
