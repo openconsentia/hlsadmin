@@ -12,14 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package cli
+package main
 
-import "testing"
+import (
+	"hlsdevkit/orch/cmd/hlsadmin/cli"
+)
 
-func TestRootCmdName(t *testing.T) {
-	expected := "goreact"
-	got := rootCmd.Use
-	if expected != got {
-		t.Errorf("Expected: %v Got: %v", expected, got)
-	}
+func main() {
+	cli.Execute()
 }

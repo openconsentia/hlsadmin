@@ -16,25 +16,39 @@ package cli
 
 import (
 	"fmt"
-	"os"
+	"hlsdevkit/orch/internal/server"
+	"log"
+	"net/http"
 
+	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
 )
 
-var rootCmd = &cobra.Command{
-	Use:   "goreact",
-	Short: "goreact is a cli app",
-	Long:  `goreact is a example cli toolkit to startup a ReactJS web`,
+type UICmdBuilder struct {
+	port    int
+	service func()
+}
+
+func (s *UICmdBuilder) cli() *cobra.Command {
+	return &cobra.Command{
+		Use:   "ui",
+		Short: "application with ui",
+		Run: func(cmd *cobra.Command, args []string) {
+			s.service()
+		},
+	}
+}
+
+var uiCmdBuilder = UICmdBuilder{
+	port: 80,
 }
 
 func init() {
-	rootCmd.AddCommand(startCmd)
-}
-
-// Execute is the cli entry point
-func Execute() {
-	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+	uiCmdBuilder.service = func() {
+		router := mux.NewRouter()
+		server.RESTRun(router)
+		server.WebRun(router)
+		log.Printf("Starting with UI on port %v", uiCmdBuilder.port)
+		log.Fatal(http.ListenAndServe(fmt.Sprintf("0.0.0.0:%v", uiCmdBuilder.port), router))
 	}
 }

@@ -5,7 +5,7 @@ services:
     goreact:
         image: ${APP_IMAGE_NAME}:${APP_IMAGE_TAG}
         container_name: goreact
-        command: ["/goreact","frontend"]
+        command: ["/hlsadmin","start", "ui"]
         ports:
             - 80:80
         networks:

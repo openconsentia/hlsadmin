@@ -15,7 +15,7 @@
 package server
 
 import (
-	"goweb/internal"
+	"hlsdevkit/orch/internal"
 	"net/http"
 
 	rice "github.com/GeertJohan/go.rice"

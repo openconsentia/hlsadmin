@@ -31,7 +31,7 @@ services:
 
     rest:
         image: ${REST_IMAGE_NAME}:${IMAGE_TAG}
-        command: ["/usr/local/bin/goreact","start","noui","-p","9000"]
+        command: ["/usr/local/bin/hlsadmin","start","noui","-p","9000"]
         container_name: rest
         expose:
             - 9000

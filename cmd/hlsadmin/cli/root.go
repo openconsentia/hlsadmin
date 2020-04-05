@@ -16,39 +16,26 @@ package cli
 
 import (
 	"fmt"
-	"goweb/internal/server"
-	"log"
-	"net/http"
+	"os"
 
-	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
 )
 
-type UICmdBuilder struct {
-	port    int
-	service func()
-}
-
-func (s *UICmdBuilder) cli() *cobra.Command {
-	return &cobra.Command{
-		Use:   "ui",
-		Short: "application with ui",
-		Run: func(cmd *cobra.Command, args []string) {
-			s.service()
-		},
-	}
-}
-
-var uiCmdBuilder = UICmdBuilder{
-	port: 80,
+var rootCmd = &cobra.Command{
+	Use:   "hlsadmin",
+	Short: "HLSAdmin is a Hyperledger Sawtooth orchestrator",
+	Long: `HLSAdmin is an orchestrator to help you spin-up and manage a Hyperledger Sawtooth
+based network.`,
 }
 
 func init() {
-	uiCmdBuilder.service = func() {
-		router := mux.NewRouter()
-		server.RESTRun(router)
-		server.WebRun(router)
-		log.Printf("Starting with UI on port %v", uiCmdBuilder.port)
-		log.Fatal(http.ListenAndServe(fmt.Sprintf("0.0.0.0:%v", uiCmdBuilder.port), router))
+	rootCmd.AddCommand(startCmd)
+}
+
+// Execute is the cli entry point
+func Execute() {
+	if err := rootCmd.Execute(); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
 	}
 }

@@ -15,8 +15,8 @@
 package server
 
 import (
-	"goweb/internal"
-	"goweb/internal/usermgmt"
+	"hlsdevkit/orch/internal"
+	"hlsdevkit/orch/internal/usermgmt"
 	"net/http"
 
 	"github.com/gorilla/mux"

@@ -1,4 +1,4 @@
-module goweb
+module hlsdevkit/orch
 
 go 1.13
 

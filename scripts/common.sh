@@ -14,6 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-export APP_IMAGE_NAME=paulwizviz/go-react-container
+export APP_IMAGE_NAME=hlsdevkit/hlsadmin-container
 export APP_IMAGE_TAG=current
 
