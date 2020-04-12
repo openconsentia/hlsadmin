@@ -1,6 +1,9 @@
 # Overview
 
-This an **experimental** Hyperledger Sawtooth network orchestrator intended primarily to verify assumptions about its technical and code architecture. In other words, this project is to address the question: If I wanted this feature what would it take to make it work?
+This an **experimental** Hyperledger Sawtooth network orchestrator intended primarily to verify assumptions about its technical and code architecture. In other words, this project is to address the questions such as: 
+
+* If I wanted this feature what would it take to make it work?
+* Is there a better way of implementing this feature?
 
 This is **NOT** a Minimum Viable Product (MVP). This project's intention is *not* to determine if a feature is viable from a useability and/or commerical perspective. Some of the features you find here may be in various stages of usability and are not necessarily bug-free. They maybe removed without notice and is definitely *not* for any mission critical deployment.
 
