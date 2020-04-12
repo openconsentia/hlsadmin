@@ -4,7 +4,6 @@
   "description": "A skeleton react project",
   "main": "index.js",
   "scripts": {
-    "start": "http-server -p 3030 ./public",
     "build": "webpack --config ./webpack/webpack.prod.js",
     "dev:build": "webpack --config ./webpack/webpack.dev.js",
     "dev:run": "npm run dev:build && webpack-dev-server --config ./webpack/webpack.dev.js"
@@ -35,7 +34,6 @@
     "eslint-loader": "^3.0.3",
     "eslint-plugin-react": "^7.18.3",
     "html-webpack-plugin": "^3.2.0",
-    "http-server": "^0.12.1",
     "mocha": "^7.1.0",
     "uglifyjs-webpack-plugin": "^2.2.0",
     "webpack": "^4.41.6",
@@ -44,20 +42,20 @@
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {
-    "@material-ui/core": "4.9.5",
-    "@material-ui/icons": "4.9.1",
-    "axios": "0.19.2",
-    "classnames": "2.2.6",
-    "clsx": "1.1.0",
-    "history": "4.10.1",
-    "prop-types": "15.7.2",
-    "react": "16.13.0",
-    "react-dom": "16.13.0",
-    "react-redux": "7.2.0",
-    "react-router-dom": "5.1.2",
-    "redux": "4.0.5",
+    "@material-ui/core": "^4.9.5",
+    "@material-ui/icons": "^4.9.1",
+    "axios": "^0.19.2",
+    "classnames": "^2.2.6",
+    "clsx": "^1.1.0",
+    "history": "^4.10.1",
+    "prop-types": "^15.7.2",
+    "react": "^16.13.0",
+    "react-dom": "^16.13.0",
+    "react-redux": "^7.2.0",
+    "react-router-dom": "^5.1.2",
+    "redux": "^4.0.5",
     "redux-logger": "3.0.6",
-    "redux-promise-middleware": "6.1.2",
-    "redux-thunk": "2.3.0"
+    "redux-promise-middleware": "^6.1.2",
+    "redux-thunk": "^2.3.0"
   }
 }
