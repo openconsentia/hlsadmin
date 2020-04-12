@@ -12,15 +12,4 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { connect } from 'react-redux';
-import { MainLayout } from '../../components';
-
-const mapStateToProps = (store) => {
-    return {
-        user: store.authReducer.user
-    };
-};
-
-export default connect(
-    mapStateToProps,
-)(MainLayout);
+export { default } from './container';

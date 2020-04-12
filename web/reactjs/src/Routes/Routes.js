@@ -15,17 +15,14 @@
 import React from 'react';
 import { Switch, Redirect } from 'react-router-dom';
 
+import RouteWithLayout from './RouteWithLayout';
 import {
     Dashboard as DashboardView,
     NotFound as NotFoundView,
     MinimalLayout,
-} from '../modules/components';
-
-import {
     MainLayout as MainLayoutContainer,
     Auth as AuthContainer,
-} from '../modules/containers';
-import RouteWithLayout from './RouteWithLayout';
+} from '../modules';
 
 const Routes = () => {
     return (

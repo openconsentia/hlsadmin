@@ -12,26 +12,4 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { connect } from 'react-redux';
-import { Auth } from '../../components';
-import { fetchAuthUser } from '../../actions';
-
-const mapStateToProps = (store) => {
-    return {
-        user: store.authReducer.user
-    };
-};
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        authenticate: async (userName, password) => dispatch({
-            type: 'AUTH_USER_FULFILLED', 
-            payload: await fetchAuthUser(userName, password),
-        })
-    };
-};
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(Auth);
+export { default as MainLayout } from './MainLayout';
