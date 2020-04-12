@@ -4,22 +4,17 @@ on:
     branches:
       - master
 jobs:
-  test:
+  build:
     runs-on: ubuntu-18.04
 
     steps:
       - uses: actions/checkout@v2
       - run: ./scripts/artefacts/build.sh unit
+      - run: ./scripts/artefacts/build.sh package
       # - uses: actions/upload-artifact@v1
       #   with:
       #     name: native-go-web
       #     path: ./build/native
-  
-  build:
-    runs-on: ubuntu-18.04
-
-    steps:
-      - run: ./scripts/artefacts/build.sh package
       # - name: Create Release
       #   id: create_release
       #   uses: actions/create-release@latest
