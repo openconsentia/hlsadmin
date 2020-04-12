@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import React from 'react';
+import {ServiceItem} from './ServiceItem';
 import Grid from '@material-ui/core/Grid';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -23,19 +24,26 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
+const addServiceItems = () => {
+    var items = [];
+    for (var index=0; index < 3; index++){
+        items.push(
+            <ServiceItem key={index}/>
+        );
+    }
+    return items;
+};
+
 const Dashboard = () => {
 
     const classes = useStyles();
 
     return (
         <div className={classes.root}>
-            <Grid container spacing={1}>
-                <Grid item lg={3} sm={6} xl={3} xs={12}>
-                    Grid1
-                </Grid>
-                <Grid item xs={12}>
-                    grid2
-                </Grid>
+            <Grid container spacing={10}>
+                {
+                    addServiceItems()
+                }
             </Grid>
         </div>
     );
