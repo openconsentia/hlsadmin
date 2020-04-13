@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const RecipeReviewCard = () => {
+const ServiceItem = () => {
     const classes = useStyles();
     const [expanded, setExpanded] = React.useState(false);
 
@@ -126,4 +126,4 @@ const RecipeReviewCard = () => {
     );
 };
 
-export default RecipeReviewCard;
+export default ServiceItem;
