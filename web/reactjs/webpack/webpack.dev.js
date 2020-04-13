@@ -2,8 +2,6 @@ const baseConfig = require('./webpack.base');
 const merge = require('webpack-merge');
 const ErrorOverlayPlugin = require('error-overlay-webpack-plugin');
 
-console.log(baseConfig.output.path)
-
 const devConfig = {
     mode: 'development',
     devServer: {

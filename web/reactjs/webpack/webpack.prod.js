@@ -1,10 +1,16 @@
-const webpack = require('webpack')
-const merge = require('webpack-merge')
-
-const baseConfig = require('./webpack.base')
+const baseConfig = require('./webpack.base');
+const merge = require('webpack-merge');
 
 const productionConfig = {
-  mode: 'production'
+  mode: 'production',
+  output: {
+    filename: '[name].bundle.js',
+  },
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+    },
+  },
 }
 
 module.exports = merge.smart(baseConfig, productionConfig);
