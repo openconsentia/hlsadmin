@@ -30,12 +30,12 @@ const useStyles = theme => ({
 
 
 const Auth = props =>{
-    const {classes, authenticate, history, user} = props;
+    const {classes, authenticate, history, authState} = props;
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
     useEffect(()=>{
-        if (user.id !== null){
+        if (authState.user.id !== null){
             history.push('/dashboard');
         } 
     });
@@ -69,7 +69,7 @@ const Auth = props =>{
 Auth.propTypes = {
     classes: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
-    user: PropTypes.object.isRequired,
+    authState: PropTypes.object.isRequired,
     authenticate: PropTypes.func.isRequired
 };
 

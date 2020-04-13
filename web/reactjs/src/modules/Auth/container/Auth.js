@@ -14,20 +14,17 @@
 
 import { connect } from 'react-redux';
 import { Auth } from '../components';
-import { fetchAuthUser } from '../../actions';
+import { fetchAuthUser } from '../actions';
 
 const mapStateToProps = (store) => {
     return {
-        user: store.authReducer.user
+        authState: store.authReducer
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        authenticate: async (userName, password) => dispatch({
-            type: 'AUTH_USER_FULFILLED', 
-            payload: await fetchAuthUser(userName, password),
-        })
+        authenticate: async (userName, password) => await fetchAuthUser(dispatch, userName, password)
     };
 };
 
