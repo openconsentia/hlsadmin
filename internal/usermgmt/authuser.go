@@ -15,8 +15,8 @@
 package usermgmt
 
 import (
+	"appliedconsentia/hlsadmin/internal"
 	"fmt"
-	"hlsdevkit/orch/internal"
 	"net/http"
 
 	"github.com/gorilla/mux"

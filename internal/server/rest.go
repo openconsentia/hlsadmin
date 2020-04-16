@@ -15,8 +15,8 @@
 package server
 
 import (
-	"hlsdevkit/orch/internal"
-	"hlsdevkit/orch/internal/usermgmt"
+	"appliedconsentia/hlsadmin/internal"
+	"appliedconsentia/hlsadmin/internal/usermgmt"
 	"net/http"
 
 	"github.com/gorilla/mux"

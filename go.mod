@@ -1,4 +1,4 @@
-module hlsdevkit/orch
+module appliedconsentia/hlsadmin
 
 go 1.13
 

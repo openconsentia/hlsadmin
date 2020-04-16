@@ -15,7 +15,7 @@
 package server
 
 import (
-	"hlsdevkit/orch/internal"
+	"appliedconsentia/hlsadmin/internal"
 	"net/http"
 
 	rice "github.com/GeertJohan/go.rice"

@@ -15,10 +15,10 @@
 package usermgmt
 
 import (
+	"appliedconsentia/hlsadmin/internal"
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"hlsdevkit/orch/internal"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"

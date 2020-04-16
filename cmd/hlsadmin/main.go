@@ -15,7 +15,7 @@
 package main
 
 import (
-	"hlsdevkit/orch/cmd/hlsadmin/cli"
+	"appliedconsentia/hlsadmin/cmd/hlsadmin/cli"
 )
 
 func main() {
