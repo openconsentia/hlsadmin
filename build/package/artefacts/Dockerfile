@@ -47,8 +47,8 @@ COPY ./go.sum ./go.sum
 RUN go get github.com/GeertJohan/go.rice/rice && \
     ./build/go-rice.sh && \
     go mod download && \
-    go test -v hlsdevkit/orch/internal/usermgmt && \
-    go test -v hlsdevkit/orch/cmd/hlsadmin/cli
+    go test -v hls-devkit/hlsadmin/internal/usermgmt && \
+    go test -v hls-devkit/hlsadmin/cmd/hlsadmin/cli
 
 # Go build phase
 # Utilising a go packaging tool github.com/GeertJohan/go.rice

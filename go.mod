@@ -1,4 +1,4 @@
-module hlsdevkit/orch
+module hls-devkit/hlsadmin
 
 go 1.13
 
