@@ -18,7 +18,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"hlsdevkit/orch/internal"
+	"hls-devkit/hlsadmin/internal"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"

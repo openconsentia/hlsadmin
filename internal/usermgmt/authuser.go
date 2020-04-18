@@ -16,7 +16,7 @@ package usermgmt
 
 import (
 	"fmt"
-	"hlsdevkit/orch/internal"
+	"hls-devkit/hlsadmin/internal"
 	"net/http"
 
 	"github.com/gorilla/mux"
