@@ -14,29 +14,9 @@
 
 package cli
 
-import (
-	"fmt"
-	"os"
+import "github.com/spf13/cobra"
 
-	"github.com/spf13/cobra"
-)
-
-var rootCmd = &cobra.Command{
-	Use:   "hlsadmin",
-	Short: "HLSAdmin is a Hyperledger Sawtooth orchestrator",
-	Long: `HLSAdmin is an orchestrator to help you spin-up and manage a Hyperledger Sawtooth
-based network.`,
-}
-
-func init() {
-	rootCmd.AddCommand(startCmd)
-	rootCmd.AddCommand(configCmd)
-}
-
-// Execute is the cli entry point
-func Execute() {
-	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
+var configCmd = &cobra.Command{
+	Use:   "configure",
+	Short: "Operations to configure hlsdamin behaviour",
 }
