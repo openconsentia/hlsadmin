@@ -50,7 +50,7 @@ func init() {
 	}
 }
 
-func NewConfig(location string) (string, error) {
+func NewConfigStore(location string) (string, error) {
 
 	if !configOps.storeExist(location) {
 		err := configOps.createStore(location)

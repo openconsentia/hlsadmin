@@ -28,7 +28,7 @@ func TestNewConfigureStoreExists(t *testing.T) {
 		},
 	}
 
-	NewConfig("./test")
+	NewConfigStore("./test")
 
 }
 
@@ -43,7 +43,7 @@ func TestNewConfigureStoreDoesNotExists(t *testing.T) {
 		},
 	}
 
-	_, err := NewConfig("./test")
+	_, err := NewConfigStore("./test")
 	if err != nil {
 		t.Errorf("Expected to be nil. Got: %v", err)
 	}
