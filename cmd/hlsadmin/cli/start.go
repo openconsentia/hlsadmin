@@ -21,7 +21,7 @@ import (
 var startCmd = &cobra.Command{
 	Use:   "start",
 	Short: "Activate goweb by feature",
-	Long:  `Command to activate goweb to run with UI or no UI`,
+	Long:  `Command to activate hlsadmin to run with UI or no UI`,
 }
 
 func init() {
