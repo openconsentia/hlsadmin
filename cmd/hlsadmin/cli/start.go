@@ -15,16 +15,40 @@
 package cli
 
 import (
+	"log"
+
 	"github.com/spf13/cobra"
 )
 
-var startCmd = &cobra.Command{
-	Use:   "start",
-	Short: "Activate goweb by feature",
-	Long:  `Command to activate hlsadmin to run with UI or no UI`,
+type StartCmdBuilder struct {
+	initapp func() error
 }
 
+func (s *StartCmdBuilder) cli() *cobra.Command {
+	return &cobra.Command{
+		Use:   "start",
+		Short: "choice of features",
+		Run: func(cmd *cobra.Command, args []string) {
+			s.initapp()
+		},
+	}
+}
+
+var startCmdBuilder = StartCmdBuilder{}
+
 func init() {
+
+	startCmdBuilder.initapp = func() error {
+		log.Println("Start called")
+		return nil
+	}
+
+}
+
+func initStartCmd() *cobra.Command {
+
+	startCmd := startCmdBuilder.cli()
+
 	uiCmd := uiCmdBuilder.cli()
 	startCmd.AddCommand(uiCmd)
 	uiCmd.Flags().IntVarP(&uiCmdBuilder.port, "port", "p", 80, "startup default port 80")
@@ -32,4 +56,6 @@ func init() {
 	noUICmd := noUICmdBuilder.cli()
 	startCmd.AddCommand(noUICmd)
 	noUICmd.Flags().IntVarP(&noUICmdBuilder.port, "port", "p", 8080, "startup default port 8080")
+
+	return startCmd
 }

@@ -17,8 +17,15 @@ package cli
 import "testing"
 
 func TestStartCmdName(t *testing.T) {
+
+	builder := StartCmdBuilder{}
+	builder.initapp = func() error {
+		return nil
+	}
+	cmd := builder.cli()
+
 	expected := "start"
-	got := startCmd.Use
+	got := cmd.Use
 	if expected != got {
 		t.Errorf("Expected: %v Got: %v", expected, got)
 	}
