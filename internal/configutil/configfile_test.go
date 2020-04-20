@@ -90,7 +90,3 @@ func TestCreateWhenNoFileFolderExist(t *testing.T) {
 		t.Errorf("Expected: 1 Got: %v", configFileCreateCalled)
 	}
 }
-
-func TestCreate(t *testing.T) {
-	NewConfigurationFile("./test/abc", "docker-compose.yaml", []byte("Hello"))
-}
