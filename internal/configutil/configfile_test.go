@@ -16,17 +16,81 @@ package configutil
 
 import "testing"
 
-func TestNewConfigFile(t *testing.T) {
-	config := HLSAdminConfiguration{
-		VolumeName: "test",
+func TestCreateWhenFolderDoesNotExist(t *testing.T) {
+
+	var configFolderCreateCalled = 0
+
+	configurationFileOps = configurationFileOperations{
+		folderExist: func(name string) bool {
+			return false
+		},
+		folderCreate: func(name string) (string, error) {
+			configFolderCreateCalled = 1
+			return "", nil
+		},
+		fileExist: func(name string) bool {
+			return true
+		},
+		fileCreate: func(name string, content []byte) error {
+			return nil
+		},
 	}
-	content, err := NewConfigFileContent(config)
-	if err != nil {
-		t.Fatalf("Faile to create content. Reason: %v", err)
+
+	NewConfigurationFile("./test", "config.yaml", []byte("Hello"))
+
+	if configFolderCreateCalled != 1 {
+		t.Fatalf("Expected: 1 Got: %d", configFolderCreateCalled)
 	}
-	got := string(content)
-	expected := "dockervolume=test"
-	if expected != got {
-		t.Errorf("Expected: %v Got: %v", expected, got)
+}
+
+func TestCreateWhenFolderExist(t *testing.T) {
+
+	configurationFileOps = configurationFileOperations{
+		folderExist: func(name string) bool {
+			return true
+		},
+		folderCreate: func(name string) (string, error) {
+			t.Fatalf("Not expeced to run create folder operation.")
+			return "", nil
+		},
+		fileExist: func(name string) bool {
+			return true
+		},
+		fileCreate: func(name string, content []byte) error {
+			return nil
+		},
 	}
+
+	NewConfigurationFile("./test", "config.yaml", []byte("Hello"))
+}
+
+func TestCreateWhenNoFileFolderExist(t *testing.T) {
+
+	var configFileCreateCalled = 0
+
+	configurationFileOps = configurationFileOperations{
+		folderExist: func(name string) bool {
+			return true
+		},
+		folderCreate: func(name string) (string, error) {
+			return "", nil
+		},
+		fileExist: func(name string) bool {
+			return false
+		},
+		fileCreate: func(name string, content []byte) error {
+			configFileCreateCalled = 1
+			return nil
+		},
+	}
+
+	NewConfigurationFile("./test", "config.yaml", []byte("Hello"))
+
+	if configFileCreateCalled != 1 {
+		t.Errorf("Expected: 1 Got: %v", configFileCreateCalled)
+	}
+}
+
+func TestCreate(t *testing.T) {
+	NewConfigurationFile("./test/abc", "docker-compose.yaml", []byte("Hello"))
 }

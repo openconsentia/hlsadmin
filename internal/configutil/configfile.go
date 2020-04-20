@@ -15,25 +15,75 @@
 package configutil
 
 import (
-	"bytes"
-	"text/template"
+	"io/ioutil"
+	"os"
+	"path"
 )
 
-const configTemplate = `dockervolume={{.VolumeName}}`
-
-type HLSAdminConfiguration struct {
-	VolumeName string
+type configurationFileOperations struct {
+	folderExist  func(name string) bool
+	folderCreate func(name string) (string, error)
+	fileExist    func(name string) bool
+	fileCreate   func(name string, content []byte) error
 }
 
-func NewConfigFileContent(config HLSAdminConfiguration) ([]byte, error) {
-	tmpl, err := template.New("hlsdmin").Parse(configTemplate)
-	if err != nil {
-		return nil, err
+var configurationFileOps configurationFileOperations
+
+func configFolderExist(name string) bool {
+	_, err := os.Stat(name)
+	if os.IsExist(err) {
+		return true
 	}
-	var fileContent bytes.Buffer
-	err = tmpl.Execute(&fileContent, config)
+	return false
+}
+
+func configFolderCreate(name string) (string, error) {
+	dir := path.Join(name)
+	err := os.MkdirAll(dir, 0700)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
-	return fileContent.Bytes(), nil
+	return dir, nil
+}
+
+func configFileExist(name string) bool {
+	_, err := os.Stat(name)
+	if os.IsExist(err) {
+		return true
+	}
+	return false
+}
+
+func configFileCreate(filename string, content []byte) error {
+	err := ioutil.WriteFile(filename, content, 0644)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func init() {
+	configurationFileOps.folderExist = configFolderExist
+	configurationFileOps.folderCreate = configFolderCreate
+	configurationFileOps.fileExist = configFileExist
+	configurationFileOps.fileCreate = configFileCreate
+}
+
+func NewConfigurationFile(foldername string, filename string, content []byte) (string, error) {
+
+	var dir string
+	var err error
+	if !configurationFileOps.folderExist(foldername) {
+		dir, err = configurationFileOps.folderCreate(foldername)
+		if err != nil {
+			return "", err
+		}
+	}
+
+	filenameFull := path.Join(dir, filename)
+	if !configurationFileOps.fileExist(filenameFull) {
+		configurationFileOps.fileCreate(filenameFull, content)
+	}
+
+	return filenameFull, nil
 }
