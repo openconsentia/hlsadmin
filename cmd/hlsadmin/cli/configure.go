@@ -14,22 +14,9 @@
 
 package cli
 
-import (
-	"github.com/spf13/cobra"
-)
+import "github.com/spf13/cobra"
 
-var startCmd = &cobra.Command{
-	Use:   "start",
-	Short: "Activate goweb by feature",
-	Long:  `Command to activate hlsadmin to run with UI or no UI`,
-}
-
-func init() {
-	uiCmd := uiCmdBuilder.cli()
-	startCmd.AddCommand(uiCmd)
-	uiCmd.Flags().IntVarP(&uiCmdBuilder.port, "port", "p", 80, "startup default port 80")
-
-	noUICmd := noUICmdBuilder.cli()
-	startCmd.AddCommand(noUICmd)
-	noUICmd.Flags().IntVarP(&noUICmdBuilder.port, "port", "p", 8080, "startup default port 8080")
+var configCmd = &cobra.Command{
+	Use:   "configure",
+	Short: "Operations to configure hlsdamin behaviour",
 }

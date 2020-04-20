@@ -30,6 +30,7 @@ based network.`,
 
 func init() {
 	rootCmd.AddCommand(startCmd)
+	rootCmd.AddCommand(configCmd)
 }
 
 // Execute is the cli entry point

@@ -14,22 +14,12 @@
 
 package cli
 
-import (
-	"github.com/spf13/cobra"
-)
+import "testing"
 
-var startCmd = &cobra.Command{
-	Use:   "start",
-	Short: "Activate goweb by feature",
-	Long:  `Command to activate hlsadmin to run with UI or no UI`,
-}
-
-func init() {
-	uiCmd := uiCmdBuilder.cli()
-	startCmd.AddCommand(uiCmd)
-	uiCmd.Flags().IntVarP(&uiCmdBuilder.port, "port", "p", 80, "startup default port 80")
-
-	noUICmd := noUICmdBuilder.cli()
-	startCmd.AddCommand(noUICmd)
-	noUICmd.Flags().IntVarP(&noUICmdBuilder.port, "port", "p", 8080, "startup default port 8080")
+func TestConfigureCmdName(t *testing.T) {
+	expected := "configure"
+	got := configCmd.Use
+	if expected != got {
+		t.Errorf("Expected: %v Got: %v", expected, got)
+	}
 }
