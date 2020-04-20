@@ -16,22 +16,50 @@ package configutil
 
 import "testing"
 
-func TestCreateWhenFolderDoesNotExist(t *testing.T) {
-
+func TestWhenConfigFolderDoesNotExist(t *testing.T) {
 	var configFolderCreateCalled = 0
-
 	configurationFileOps = configurationFileOperations{
 		folderExist: func(name string) bool {
 			return false
 		},
-		folderCreate: func(name string) (string, error) {
+		folderCreate: func(name string) error {
 			configFolderCreateCalled = 1
-			return "", nil
+			return nil
 		},
-		fileExist: func(name string) bool {
+	}
+
+	NewConfigurationFolder("./test/abc")
+
+	if configFolderCreateCalled != 1 {
+		t.Errorf("Exoected: 1 Got: %v", configFolderCreateCalled)
+	}
+}
+
+func TestWhenConfigFolderExist(t *testing.T) {
+	configurationFileOps = configurationFileOperations{
+		folderExist: func(name string) bool {
 			return true
 		},
+		folderCreate: func(name string) error {
+			t.Error("The operations to create a folder should not be called")
+			return nil
+		},
+	}
+
+	NewConfigurationFolder("./test/abc")
+
+}
+
+func TestCreateFileWhenItDoesNotExist(t *testing.T) {
+
+	var configFolderCreateCalled = 0
+
+	configurationFileOps = configurationFileOperations{
+		fileExist: func(name string) bool {
+			return false
+		},
 		fileCreate: func(name string, content []byte) error {
+			configFolderCreateCalled = 1
 			return nil
 		},
 	}
@@ -43,50 +71,18 @@ func TestCreateWhenFolderDoesNotExist(t *testing.T) {
 	}
 }
 
-func TestCreateWhenFolderExist(t *testing.T) {
+func TestCreateFileWhenItExits(t *testing.T) {
 
 	configurationFileOps = configurationFileOperations{
-		folderExist: func(name string) bool {
-			return true
-		},
-		folderCreate: func(name string) (string, error) {
-			t.Fatalf("Not expeced to run create folder operation.")
-			return "", nil
-		},
 		fileExist: func(name string) bool {
 			return true
 		},
 		fileCreate: func(name string, content []byte) error {
-			return nil
-		},
-	}
-
-	NewConfigurationFile("./test", "config.yaml", []byte("Hello"))
-}
-
-func TestCreateWhenNoFileFolderExist(t *testing.T) {
-
-	var configFileCreateCalled = 0
-
-	configurationFileOps = configurationFileOperations{
-		folderExist: func(name string) bool {
-			return true
-		},
-		folderCreate: func(name string) (string, error) {
-			return "", nil
-		},
-		fileExist: func(name string) bool {
-			return false
-		},
-		fileCreate: func(name string, content []byte) error {
-			configFileCreateCalled = 1
+			t.Errorf("Operations to create file should not be called")
 			return nil
 		},
 	}
 
 	NewConfigurationFile("./test", "config.yaml", []byte("Hello"))
 
-	if configFileCreateCalled != 1 {
-		t.Errorf("Expected: 1 Got: %v", configFileCreateCalled)
-	}
 }

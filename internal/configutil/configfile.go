@@ -22,7 +22,7 @@ import (
 
 type configurationFileOperations struct {
 	folderExist  func(name string) bool
-	folderCreate func(name string) (string, error)
+	folderCreate func(name string) error
 	fileExist    func(name string) bool
 	fileCreate   func(name string, content []byte) error
 }
@@ -37,13 +37,12 @@ func configFolderExist(name string) bool {
 	return false
 }
 
-func configFolderCreate(name string) (string, error) {
-	dir := path.Join(name)
-	err := os.MkdirAll(dir, 0700)
+func configFolderCreate(name string) error {
+	err := os.MkdirAll(name, 0700)
 	if err != nil {
-		return "", err
+		return err
 	}
-	return dir, nil
+	return nil
 }
 
 func configFileExist(name string) bool {
@@ -69,21 +68,23 @@ func init() {
 	configurationFileOps.fileCreate = configFileCreate
 }
 
-func NewConfigurationFile(foldername string, filename string, content []byte) (string, error) {
+func NewConfigurationFolder(name string) (string, error) {
 
-	var dir string
-	var err error
-	if !configurationFileOps.folderExist(foldername) {
-		dir, err = configurationFileOps.folderCreate(foldername)
+	dir := path.Join(name)
+	if !configurationFileOps.folderExist(name) {
+		err := configurationFileOps.folderCreate(name)
 		if err != nil {
 			return "", err
 		}
 	}
 
-	filenameFull := path.Join(dir, filename)
+	return dir, nil
+}
+
+func NewConfigurationFile(foldername string, filename string, content []byte) (string, error) {
+	filenameFull := path.Join(foldername, filename)
 	if !configurationFileOps.fileExist(filenameFull) {
 		configurationFileOps.fileCreate(filenameFull, content)
 	}
-
 	return filenameFull, nil
 }
