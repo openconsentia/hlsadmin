@@ -19,8 +19,8 @@ import "testing"
 func TestStartCmdName(t *testing.T) {
 
 	builder := StartCmdBuilder{}
-	builder.initapp = func() error {
-		return nil
+	builder.initapp = func() (string, error) {
+		return "", nil
 	}
 	cmd := builder.cli()
 

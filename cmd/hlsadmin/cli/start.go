@@ -25,19 +25,19 @@ import (
 )
 
 type StartCmdBuilder struct {
-	initapp func() error
+	initapp func() (string, error)
 }
 
 func (s *StartCmdBuilder) cli() *cobra.Command {
 	return &cobra.Command{
 		Use:   "start",
 		Short: "choice of features",
-		Run: func(cmd *cobra.Command, args []string) {
-			err := s.initapp()
-			log.Println("Hello")
+		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+			configDir, err := s.initapp()
 			if err != nil {
 				log.Fatalf("Unable to start. Reason: %v", err)
 			}
+			log.Printf("Created configuration store at %v", configDir)
 		},
 	}
 }
@@ -46,17 +46,17 @@ var startCmdBuilder = StartCmdBuilder{}
 
 func init() {
 
-	startCmdBuilder.initapp = func() error {
+	startCmdBuilder.initapp = func() (string, error) {
 		home, err := os.UserHomeDir()
 		if err != nil {
-			return err
+			return "", err
 		}
 		configFolder := path.Join(home, ".hlsadmin")
-		_, err = configutil.NewConfigurationFolder(configFolder)
+		dir, err := configutil.NewConfigurationFolder(configFolder)
 		if err != nil {
-			return err
+			return "", err
 		}
-		return nil
+		return dir, nil
 	}
 
 }
