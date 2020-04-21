@@ -15,7 +15,11 @@
 package cli
 
 import (
+	"hls-devkit/hlsadmin/internal/configutil"
 	"log"
+	"os"
+
+	"path"
 
 	"github.com/spf13/cobra"
 )
@@ -29,7 +33,11 @@ func (s *StartCmdBuilder) cli() *cobra.Command {
 		Use:   "start",
 		Short: "choice of features",
 		Run: func(cmd *cobra.Command, args []string) {
-			s.initapp()
+			err := s.initapp()
+			log.Println("Hello")
+			if err != nil {
+				log.Fatalf("Unable to start. Reason: %v", err)
+			}
 		},
 	}
 }
@@ -39,7 +47,15 @@ var startCmdBuilder = StartCmdBuilder{}
 func init() {
 
 	startCmdBuilder.initapp = func() error {
-		log.Println("Start called")
+		home, err := os.UserHomeDir()
+		if err != nil {
+			return err
+		}
+		configFolder := path.Join(home, ".hlsadmin")
+		_, err = configutil.NewConfigurationFolder(configFolder)
+		if err != nil {
+			return err
+		}
 		return nil
 	}
 

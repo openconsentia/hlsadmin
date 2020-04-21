@@ -88,3 +88,7 @@ func NewConfigurationFile(foldername string, filename string, content []byte) (s
 	}
 	return filenameFull, nil
 }
+
+func NewSettingsFile(foldername string) (string, error) {
+	return NewConfigurationFile(foldername, "settings.yaml", []byte{})
+}
