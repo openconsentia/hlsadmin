@@ -80,6 +80,6 @@ services:
     depends_on:
       - validator`
 
-func generateConfigContent() []byte {
+func GenerateCompose() []byte {
 	return []byte(composeContent)
 }

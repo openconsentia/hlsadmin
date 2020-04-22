@@ -5,7 +5,6 @@ go 1.13
 require (
 	github.com/GeertJohan/go.rice v1.0.0
 	github.com/Microsoft/go-winio v0.4.14 // indirect
-	github.com/aristanetworks/goarista v0.0.0-20200410125653-0a3087568c00
 	github.com/docker/distribution v2.7.1+incompatible // indirect
 	github.com/docker/docker v1.13.1
 	github.com/docker/go-connections v0.4.0 // indirect

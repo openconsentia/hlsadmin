@@ -29,6 +29,9 @@ based network.`,
 }
 
 func init() {
+
+	startCmd := initStartCmd()
+
 	rootCmd.AddCommand(startCmd)
 	rootCmd.AddCommand(configCmd)
 }

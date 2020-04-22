@@ -15,16 +15,56 @@
 package cli
 
 import (
+	"hls-devkit/hlsadmin/internal/configutil"
+	"log"
+	"os"
+
+	"path"
+
 	"github.com/spf13/cobra"
 )
 
-var startCmd = &cobra.Command{
-	Use:   "start",
-	Short: "Activate goweb by feature",
-	Long:  `Command to activate hlsadmin to run with UI or no UI`,
+type StartCmdBuilder struct {
+	initapp func() (string, error)
 }
 
+func (s *StartCmdBuilder) cli() *cobra.Command {
+	return &cobra.Command{
+		Use:   "start",
+		Short: "choice of features",
+		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+			configDir, err := s.initapp()
+			if err != nil {
+				log.Fatalf("Unable to start. Reason: %v", err)
+			}
+			log.Printf("Created configuration store at %v", configDir)
+		},
+	}
+}
+
+var startCmdBuilder = StartCmdBuilder{}
+
 func init() {
+
+	startCmdBuilder.initapp = func() (string, error) {
+		home, err := os.UserHomeDir()
+		if err != nil {
+			return "", err
+		}
+		configFolder := path.Join(home, ".hlsadmin")
+		dir, err := configutil.NewConfigurationFolder(configFolder)
+		if err != nil {
+			return "", err
+		}
+		return dir, nil
+	}
+
+}
+
+func initStartCmd() *cobra.Command {
+
+	startCmd := startCmdBuilder.cli()
+
 	uiCmd := uiCmdBuilder.cli()
 	startCmd.AddCommand(uiCmd)
 	uiCmd.Flags().IntVarP(&uiCmdBuilder.port, "port", "p", 80, "startup default port 80")
@@ -32,4 +72,6 @@ func init() {
 	noUICmd := noUICmdBuilder.cli()
 	startCmd.AddCommand(noUICmd)
 	noUICmd.Flags().IntVarP(&noUICmdBuilder.port, "port", "p", 8080, "startup default port 8080")
+
+	return startCmd
 }
