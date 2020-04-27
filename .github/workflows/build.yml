@@ -9,8 +9,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - run: ./scripts/artefacts/build.sh unit
-      - run: ./scripts/artefacts/build.sh package
+      - run: ./scripts/test/unit.sh go
+      - run: ./scripts/test/unit.sh clean
+      #- run: ./scripts/artefacts/build.sh package
       # - uses: actions/upload-artifact@v1
       #   with:
       #     name: native-go-web

@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack --config ./webpack/webpack.prod.js",
+    "test": "echo echo \"Test specification to be defined\"",
     "dev:build": "webpack --config ./webpack/webpack.dev.js",
     "dev:run": "npm run dev:build && webpack-dev-server --config ./webpack/webpack.dev.js"
   },

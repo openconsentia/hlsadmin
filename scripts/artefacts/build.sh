@@ -19,7 +19,6 @@
 COMMAND="$1"
 
 native_build_image=hls_devkit/native_build_image:current
-test_build_image=hls_devkit/test_build_image:current
 
 function packageContainer() {
     docker build -f ./build/package/artefacts/Dockerfile -t ${APP_IMAGE_NAME}:${APP_IMAGE_TAG} .
@@ -40,10 +39,6 @@ function packageNative(){
     docker rmi -f ${native_build_image}
 }
 
-function goUnitTest(){
-    docker build -f ./build/package/artefacts/Dockerfile --target gotest -t ${test_build_image} .
-}
-
 function cleanNative() {
     if [ -d ./build/native ]; then
         rm -rf ./build/native
@@ -52,7 +47,6 @@ function cleanNative() {
 
 function cleanImages() {
     docker rmi -f ${APP_IMAGE_NAME}:${APP_IMAGE_TAG}
-    docker rmi -f ${test_build_image}
     docker rmi -f $(docker images --filter "dangling=true" -q)
 }
 
@@ -61,14 +55,11 @@ case $COMMAND in
         packageNative
         packageContainer
         ;;
-    "unit")
-        goUnitTest
-        ;;
     "clean")
         cleanNative
         cleanImages
         ;;
     *)
-        echo "$0 [ package | unit | clean ]"
+        echo "$0 [ package | clean ]"
         ;;
 esac
