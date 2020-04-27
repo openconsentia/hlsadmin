@@ -28,11 +28,11 @@ COPY ./web/reactjs/src /opt/src
 
 RUN npm install && npm audit fix && npm run build
 
-# Go test phase
+# Go build phase
 # Utilising a go packaging tool github.com/GeertJohan/go.rice
 # the web artefacts is packaged into a file name rice-box.go.
 # Go builder then generates a version for linux platform.
-FROM golang:1.13.3 as gotest
+FROM golang:1.13.3 as gobuild
 
 WORKDIR /opt
 
@@ -43,28 +43,6 @@ COPY --from=nodebuild /opt/public ./web
 
 COPY ./go.mod ./go.mod
 COPY ./go.sum ./go.sum
-
-RUN go get github.com/GeertJohan/go.rice/rice && \
-    ./build/go-rice.sh && \
-    go mod download && \
-    go test -v hls-devkit/hlsadmin/internal/usermgmt && \
-    go test -v hls-devkit/hlsadmin/cmd/hlsadmin/cli
-
-# Go build phase
-# Utilising a go packaging tool github.com/GeertJohan/go.rice
-# the web artefacts is packaged into a file name rice-box.go.
-# Go builder then generates a version for linux platform.
-FROM golang:1.13.3 as gobuild
-
-WORKDIR /opt
-
-COPY --from=gotest /opt/cmd ./cmd
-COPY --from=gotest /opt/internal ./internal
-COPY --from=gotest /opt/build/go-rice.sh ./build/go-rice.sh
-COPY --from=gotest /opt/web ./web
-
-COPY --from=gotest /opt/go.mod ./go.mod
-COPY --from=gotest /opt/go.sum ./go.sum
 
 RUN go get github.com/GeertJohan/go.rice/rice && \
     ./build/go-rice.sh && \

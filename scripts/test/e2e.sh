@@ -18,9 +18,6 @@
 
 COMMAND="$1"
 
-export DB_IMAGE_NAME=postgres
-export DB_IMAGE_TAG=12
-
 function start(){
     docker-compose -f ./deployments/e2e/docker-compose.yaml up -d
 }
