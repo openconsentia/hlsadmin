@@ -24,12 +24,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type NoUICmdBuilder struct {
+type noUICmdBuilder struct {
 	port    int
 	service func()
 }
 
-func (s *NoUICmdBuilder) cli() *cobra.Command {
+func (s *noUICmdBuilder) cli() *cobra.Command {
 	return &cobra.Command{
 		Use:   "noui",
 		Short: "application starts only with RESTFul endpoints",
@@ -39,15 +39,15 @@ func (s *NoUICmdBuilder) cli() *cobra.Command {
 	}
 }
 
-var noUICmdBuilder = NoUICmdBuilder{
+var noUICmdBlder = noUICmdBuilder{
 	port: 8080,
 }
 
 func init() {
-	noUICmdBuilder.service = func() {
+	noUICmdBlder.service = func() {
 		router := mux.NewRouter()
 		server.RESTRun(router)
-		log.Printf("Starting with no UI on port %v", noUICmdBuilder.port)
-		log.Fatal(http.ListenAndServe(fmt.Sprintf("0.0.0.0:%v", noUICmdBuilder.port), router))
+		log.Printf("Starting with no UI on port %v", noUICmdBlder.port)
+		log.Fatal(http.ListenAndServe(fmt.Sprintf("0.0.0.0:%v", noUICmdBlder.port), router))
 	}
 }

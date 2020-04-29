@@ -17,7 +17,7 @@ package cli
 import "testing"
 
 func TestNoUICmdName(t *testing.T) {
-	builder := NoUICmdBuilder{}
+	builder := noUICmdBuilder{}
 	builder.service = func() {}
 
 	cmd := builder.cli()
@@ -29,7 +29,7 @@ func TestNoUICmdName(t *testing.T) {
 }
 
 func TestNoUICmdPortFlag(t *testing.T) {
-	builder := NoUICmdBuilder{
+	builder := noUICmdBuilder{
 		port: 8080,
 	}
 	builder.service = func() {

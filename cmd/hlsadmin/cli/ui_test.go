@@ -17,7 +17,7 @@ package cli
 import "testing"
 
 func TestUICmdName(t *testing.T) {
-	builder := UICmdBuilder{}
+	builder := uiCmdBuilder{}
 	builder.service = func() {}
 
 	cmd := builder.cli()
@@ -29,7 +29,7 @@ func TestUICmdName(t *testing.T) {
 }
 
 func TestUICmdPortFlag(t *testing.T) {
-	builder := UICmdBuilder{
+	builder := uiCmdBuilder{
 		port: 80,
 	}
 	builder.service = func() {
