@@ -12,31 +12,37 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package cli
+package configutil
 
 import (
-	"testing"
+	"os"
+	"path"
 )
 
-func TestStartCmdName(t *testing.T) {
+const DefaultFolderName = ".hlsadmin"
 
-	cmd := createStartCmd()
-
-	expected := "start"
-	got := cmd.Use
-	if expected != got {
-		t.Errorf("Expected: %v Got: %v", expected, got)
+func homePathToConfigFolder() (string, error) {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return "", err
 	}
+	folder := path.Join(home, DefaultFolderName)
+	return folder, nil
 }
 
-func TestStartCmdAppInit(t *testing.T) {
-	initOpsCall := 0
-	initOps = func() (string, error) {
-		initOpsCall += 1
-		return "", nil
+func InitialiseApp() (string, error) {
+	configFolder, err := homePathToConfigFolder()
+	if err != nil {
+		return "", err
 	}
-	appInit()
-	if initOpsCall != 1 {
-		t.Fatalf("Expected: 1 Got: %d", initOpsCall)
+
+	dir, err := newConfigurationFolder(configFolder)
+	if err != nil {
+		return "", err
 	}
+	return dir, nil
+}
+
+func NewSettingsFile(foldername string) (string, error) {
+	return newConfigurationFile(foldername, "settings.yaml", []byte{})
 }

@@ -14,29 +14,12 @@
 
 package cli
 
-import (
-	"testing"
-)
+import "testing"
 
-func TestStartCmdName(t *testing.T) {
-
-	cmd := createStartCmd()
-
-	expected := "start"
-	got := cmd.Use
+func TestRunCmdName(t *testing.T) {
+	expected := "run"
+	got := runCmd.Use
 	if expected != got {
-		t.Errorf("Expected: %v Got: %v", expected, got)
-	}
-}
-
-func TestStartCmdAppInit(t *testing.T) {
-	initOpsCall := 0
-	initOps = func() (string, error) {
-		initOpsCall += 1
-		return "", nil
-	}
-	appInit()
-	if initOpsCall != 1 {
-		t.Fatalf("Expected: 1 Got: %d", initOpsCall)
+		t.Fatalf("Expected: %v Got: %v", expected, got)
 	}
 }

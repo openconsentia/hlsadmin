@@ -12,14 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package cli
+package configutil
 
-import "testing"
+import (
+	"os"
+	"path"
+	"testing"
+)
 
-func TestConfigureCmdName(t *testing.T) {
-	expected := "configure"
-	got := configCmd.Use
-	if expected != got {
-		t.Errorf("Expected: %v Got: %v", expected, got)
+func TestHomePathToConfigUtil(t *testing.T) {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		t.Fatalf("Expected to get a path to home. Reason: %v", err)
+	}
+	expectedPathToConfig := path.Join(home, DefaultFolderName)
+	gotPathToConfig, err := homePathToConfigFolder()
+	if err != nil {
+		t.Fatalf("Expected to create a path to config. Reason: %v", err)
+	}
+	if expectedPathToConfig != gotPathToConfig {
+		t.Fatalf("Expected: %s Got: %s", expectedPathToConfig, gotPathToConfig)
 	}
 }

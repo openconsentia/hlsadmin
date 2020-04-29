@@ -17,53 +17,33 @@ package cli
 import (
 	"hls-devkit/hlsadmin/internal/configutil"
 	"log"
-	"os"
-
-	"path"
 
 	"github.com/spf13/cobra"
 )
 
-type startCmdBuilder struct {
-	initapp func() (string, error)
+var initOps func() (string, error)
+
+func init() {
+	initOps = configutil.InitialiseApp
 }
 
-func (s *startCmdBuilder) cli() *cobra.Command {
-	return &cobra.Command{
+func appInit() {
+	configDir, err := initOps()
+	if err != nil {
+		log.Fatalf("Unable to start. Reason: %v", err)
+	}
+	log.Printf("Created configuration store at %v", configDir)
+}
+
+func createStartCmd() *cobra.Command {
+
+	startCmd := &cobra.Command{
 		Use:   "start",
 		Short: "choice of features",
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
-			configDir, err := s.initapp()
-			if err != nil {
-				log.Fatalf("Unable to start. Reason: %v", err)
-			}
-			log.Printf("Created configuration store at %v", configDir)
+			appInit()
 		},
 	}
-}
-
-var startCmdBlder = startCmdBuilder{}
-
-func init() {
-
-	startCmdBlder.initapp = func() (string, error) {
-		home, err := os.UserHomeDir()
-		if err != nil {
-			return "", err
-		}
-		configFolder := path.Join(home, ".hlsadmin")
-		dir, err := configutil.NewConfigurationFolder(configFolder)
-		if err != nil {
-			return "", err
-		}
-		return dir, nil
-	}
-
-}
-
-func initStartCmd() *cobra.Command {
-
-	startCmd := startCmdBlder.cli()
 
 	uiCmd := uiCmdBlder.cli()
 	startCmd.AddCommand(uiCmd)

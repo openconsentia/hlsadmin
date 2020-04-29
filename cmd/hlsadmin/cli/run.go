@@ -16,7 +16,7 @@ package cli
 
 import "github.com/spf13/cobra"
 
-var configCmd = &cobra.Command{
-	Use:   "configure",
-	Short: "Operations to configure hlsdamin behaviour",
+var runCmd = &cobra.Command{
+	Use:   "run",
+	Short: "command",
 }

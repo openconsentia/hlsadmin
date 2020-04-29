@@ -30,10 +30,9 @@ based network.`,
 
 func init() {
 
-	startCmd := initStartCmd()
+	startCmd := createStartCmd()
 
 	rootCmd.AddCommand(startCmd)
-	rootCmd.AddCommand(configCmd)
 }
 
 // Execute is the cli entry point
