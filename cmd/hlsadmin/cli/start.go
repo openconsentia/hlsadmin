@@ -24,20 +24,15 @@ import (
 var initOps func() (string, error)
 
 func init() {
+	initOps = configutil.InitialiseApp
+}
 
-	initOps = func() (string, error) {
-		configFolder, err := configutil.HomePathToConfigFolder()
-		if err != nil {
-			return "", err
-		}
-
-		dir, err := configutil.NewConfigurationFolder(configFolder)
-		if err != nil {
-			return "", err
-		}
-		return dir, nil
+func appInit() {
+	configDir, err := initOps()
+	if err != nil {
+		log.Fatalf("Unable to start. Reason: %v", err)
 	}
-
+	log.Printf("Created configuration store at %v", configDir)
 }
 
 func createStartCmd() *cobra.Command {
@@ -46,11 +41,7 @@ func createStartCmd() *cobra.Command {
 		Use:   "start",
 		Short: "choice of features",
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
-			configDir, err := initOps()
-			if err != nil {
-				log.Fatalf("Unable to start. Reason: %v", err)
-			}
-			log.Printf("Created configuration store at %v", configDir)
+			appInit()
 		},
 	}
 

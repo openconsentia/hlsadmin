@@ -21,7 +21,7 @@ import (
 
 const DefaultFolderName = ".hlsadmin"
 
-func HomePathToConfigFolder() (string, error) {
+func homePathToConfigFolder() (string, error) {
 	home, err := os.UserHomeDir()
 	if err != nil {
 		return "", err
@@ -30,8 +30,17 @@ func HomePathToConfigFolder() (string, error) {
 	return folder, nil
 }
 
-func NewConfigurationFolder(name string) (string, error) {
-	return newConfigurationFolder(name)
+func InitialiseApp() (string, error) {
+	configFolder, err := homePathToConfigFolder()
+	if err != nil {
+		return "", err
+	}
+
+	dir, err := newConfigurationFolder(configFolder)
+	if err != nil {
+		return "", err
+	}
+	return dir, nil
 }
 
 func NewSettingsFile(foldername string) (string, error) {
