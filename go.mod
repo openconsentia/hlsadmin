@@ -5,6 +5,7 @@ go 1.13
 require (
 	github.com/GeertJohan/go.rice v1.0.0
 	github.com/Microsoft/go-winio v0.4.14 // indirect
+	github.com/aristanetworks/goarista v0.0.0-20200423211322-0b5ff220aee9 // indirect
 	github.com/coreos/go-etcd v2.0.0+incompatible // indirect
 	github.com/cpuguy83/go-md2man v1.0.10 // indirect
 	github.com/docker/distribution v2.7.1+incompatible // indirect
@@ -15,5 +16,5 @@ require (
 	github.com/opencontainers/go-digest v1.0.0-rc1 // indirect
 	github.com/spf13/cobra v1.0.0
 	github.com/ugorji/go v1.1.7 // indirect
-	golang.org/x/net v0.0.0-20200421231249-e086a090c8fd // indirect
+	golang.org/x/net v0.0.0-20200425230154-ff2c4b7c35a0 // indirect
 )
