@@ -33,7 +33,6 @@ func init() {
 	startCmd := initStartCmd()
 
 	rootCmd.AddCommand(startCmd)
-	rootCmd.AddCommand(configCmd)
 }
 
 // Execute is the cli entry point
