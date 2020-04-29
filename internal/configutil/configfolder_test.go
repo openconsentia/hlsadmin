@@ -30,7 +30,7 @@ func TestNewConfigFolderWhenExist(t *testing.T) {
 	}
 
 	inputName := "./test"
-	folder, _ := NewConfigurationFolder(inputName)
+	folder, _ := newConfigurationFolder(inputName)
 	if folder != path.Join(inputName) {
 		t.Fatalf("Expected: %s Got: %s", path.Join(inputName), folder)
 	}
