@@ -24,11 +24,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type StartCmdBuilder struct {
+type startCmdBuilder struct {
 	initapp func() (string, error)
 }
 
-func (s *StartCmdBuilder) cli() *cobra.Command {
+func (s *startCmdBuilder) cli() *cobra.Command {
 	return &cobra.Command{
 		Use:   "start",
 		Short: "choice of features",
@@ -42,11 +42,11 @@ func (s *StartCmdBuilder) cli() *cobra.Command {
 	}
 }
 
-var startCmdBuilder = StartCmdBuilder{}
+var startCmdBlder = startCmdBuilder{}
 
 func init() {
 
-	startCmdBuilder.initapp = func() (string, error) {
+	startCmdBlder.initapp = func() (string, error) {
 		home, err := os.UserHomeDir()
 		if err != nil {
 			return "", err
@@ -63,15 +63,15 @@ func init() {
 
 func initStartCmd() *cobra.Command {
 
-	startCmd := startCmdBuilder.cli()
+	startCmd := startCmdBlder.cli()
 
-	uiCmd := uiCmdBuilder.cli()
+	uiCmd := uiCmdBlder.cli()
 	startCmd.AddCommand(uiCmd)
-	uiCmd.Flags().IntVarP(&uiCmdBuilder.port, "port", "p", 80, "startup default port 80")
+	uiCmd.Flags().IntVarP(&uiCmdBlder.port, "port", "p", 80, "startup default port 80")
 
-	noUICmd := noUICmdBuilder.cli()
+	noUICmd := noUICmdBlder.cli()
 	startCmd.AddCommand(noUICmd)
-	noUICmd.Flags().IntVarP(&noUICmdBuilder.port, "port", "p", 8080, "startup default port 8080")
+	noUICmd.Flags().IntVarP(&noUICmdBlder.port, "port", "p", 8080, "startup default port 8080")
 
 	return startCmd
 }

@@ -24,12 +24,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type UICmdBuilder struct {
+type uiCmdBuilder struct {
 	port    int
 	service func()
 }
 
-func (s *UICmdBuilder) cli() *cobra.Command {
+func (s *uiCmdBuilder) cli() *cobra.Command {
 	return &cobra.Command{
 		Use:   "ui",
 		Short: "application with ui",
@@ -39,16 +39,16 @@ func (s *UICmdBuilder) cli() *cobra.Command {
 	}
 }
 
-var uiCmdBuilder = UICmdBuilder{
+var uiCmdBlder = uiCmdBuilder{
 	port: 80,
 }
 
 func init() {
-	uiCmdBuilder.service = func() {
+	uiCmdBlder.service = func() {
 		router := mux.NewRouter()
 		server.RESTRun(router)
 		server.WebRun(router)
-		log.Printf("Starting with UI on port %v", uiCmdBuilder.port)
-		log.Fatal(http.ListenAndServe(fmt.Sprintf("0.0.0.0:%v", uiCmdBuilder.port), router))
+		log.Printf("Starting with UI on port %v", uiCmdBlder.port)
+		log.Fatal(http.ListenAndServe(fmt.Sprintf("0.0.0.0:%v", uiCmdBlder.port), router))
 	}
 }
