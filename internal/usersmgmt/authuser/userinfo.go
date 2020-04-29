@@ -12,16 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package usermgmt
+package authuser
 
-import "encoding/json"
+type userInfoBytes []byte
 
-// UserInfo represents information about a user
-type UserInfo struct {
+type userInfo struct {
 	ID          string `json:"id"`
 	DisplayName string `json:"displayName"`
-}
-
-func (u *UserInfo) Marshal() ([]byte, error) {
-	return json.Marshal(&u)
 }

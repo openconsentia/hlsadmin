@@ -23,5 +23,5 @@ COPY ./go.mod ./go.mod
 COPY ./go.sum ./go.sum
 
 RUN go mod download && \
-    go test -v hls-devkit/hlsadmin/internal/usermgmt && \
+    go test -v hls-devkit/hlsadmin/internal/usersmgmt/authuser && \
     go test -v hls-devkit/hlsadmin/cmd/hlsadmin/cli
