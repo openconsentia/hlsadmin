@@ -30,7 +30,7 @@ based network.`,
 
 func init() {
 
-	startCmd := initStartCmd()
+	startCmd := createStartCmd()
 
 	rootCmd.AddCommand(startCmd)
 }

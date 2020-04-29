@@ -16,55 +16,19 @@ package configutil
 
 import "testing"
 
-func TestWhenConfigFolderDoesNotExist(t *testing.T) {
-	var configFolderCreateCalled = 0
-	configurationFileOps = configurationFileOperations{
-		folderExist: func(name string) bool {
-			return false
-		},
-		folderCreate: func(name string) error {
-			configFolderCreateCalled = 1
-			return nil
-		},
-	}
-
-	NewConfigurationFolder("./test/abc")
-
-	if configFolderCreateCalled != 1 {
-		t.Errorf("Exoected: 1 Got: %v", configFolderCreateCalled)
-	}
-}
-
-func TestWhenConfigFolderExist(t *testing.T) {
-	configurationFileOps = configurationFileOperations{
-		folderExist: func(name string) bool {
-			return true
-		},
-		folderCreate: func(name string) error {
-			t.Error("The operations to create a folder should not be called")
-			return nil
-		},
-	}
-
-	NewConfigurationFolder("./test/abc")
-
-}
-
 func TestCreateFileWhenItDoesNotExist(t *testing.T) {
 
 	var configFolderCreateCalled = 0
-
-	configurationFileOps = configurationFileOperations{
-		fileExist: func(name string) bool {
-			return false
-		},
-		fileCreate: func(name string, content []byte) error {
-			configFolderCreateCalled = 1
-			return nil
-		},
+	configFileExists = func(name string) bool {
+		return false
 	}
 
-	NewConfigurationFile("./test", "config.yaml", []byte("Hello"))
+	configFileCreate = func(name string, content []byte) error {
+		configFolderCreateCalled = 1
+		return nil
+	}
+
+	newConfigurationFile("./test", "config.yaml", []byte("Hello"))
 
 	if configFolderCreateCalled != 1 {
 		t.Fatalf("Expected: 1 Got: %d", configFolderCreateCalled)
@@ -73,16 +37,14 @@ func TestCreateFileWhenItDoesNotExist(t *testing.T) {
 
 func TestCreateFileWhenItExits(t *testing.T) {
 
-	configurationFileOps = configurationFileOperations{
-		fileExist: func(name string) bool {
-			return true
-		},
-		fileCreate: func(name string, content []byte) error {
-			t.Errorf("Operations to create file should not be called")
-			return nil
-		},
+	configFileExists = func(name string) bool {
+		return true
+	}
+	configFileCreate = func(name string, content []byte) error {
+		t.Errorf("Operations to create file should not be called")
+		return nil
 	}
 
-	NewConfigurationFile("./test", "config.yaml", []byte("Hello"))
+	newConfigurationFile("./test", "config.yaml", []byte("Hello"))
 
 }

@@ -12,17 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package cli
+package configutil
 
-import "testing"
+import (
+	"path"
+	"testing"
+)
 
-func TestStartCmdName(t *testing.T) {
-
-	cmd := createStartCmd()
-
-	expected := "start"
-	got := cmd.Use
-	if expected != got {
-		t.Errorf("Expected: %v Got: %v", expected, got)
+func TestNewConfigFolderWhenExist(t *testing.T) {
+	configFolderExists = func(name string) bool {
+		return true
 	}
+
+	configFolderCreate = func(name string) error {
+		t.Fatalf("Do not expect create folder to be called.")
+		return nil
+	}
+
+	inputName := "./test"
+	folder, _ := NewConfigurationFolder(inputName)
+	if folder != path.Join(inputName) {
+		t.Fatalf("Expected: %s Got: %s", path.Join(inputName), folder)
+	}
+
 }
