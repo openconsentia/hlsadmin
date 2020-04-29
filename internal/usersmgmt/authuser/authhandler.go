@@ -12,22 +12,36 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package usermgmt
+package authuser
 
 import (
-	"fmt"
+	"encoding/json"
 	"hls-devkit/hlsadmin/internal"
+	"io/ioutil"
 	"net/http"
-
-	"github.com/gorilla/mux"
 )
 
-// AuthUser represents a user who has been verified to use this app
-type AuthUser struct {
-	Authenticator func(id string, secrets string) (string, []byte, error)
+type credentials struct {
+	ID      string `json:"id"`
+	Secrets string `json:"secrets"`
 }
 
-func (au *AuthUser) Handler(rw http.ResponseWriter, req *http.Request) {
+func parseAuthBody(req *http.Request) (*credentials, error) {
+	body, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		return nil, err
+	}
+	defer req.Body.Close()
+	var cred credentials
+	err = json.Unmarshal(body, &cred)
+	if err != nil {
+		return nil, err
+	}
+	return &cred, nil
+
+}
+
+func Handler(rw http.ResponseWriter, req *http.Request) {
 
 	if req.Method != "POST" {
 		rw.WriteHeader(http.StatusUnauthorized)
@@ -39,11 +53,13 @@ func (au *AuthUser) Handler(rw http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	param := mux.Vars(req)
-	id := param["id"]
-	secrets := param["secrets"]
+	cred, err := parseAuthBody(req)
+	if err != nil {
+		rw.WriteHeader(http.StatusUnauthorized)
+		return
+	}
 
-	token, userInfo, err := au.Authenticator(id, secrets)
+	token, userInfo, err := jwtAuthenticator(cred.ID, cred.Secrets)
 	if err != nil {
 		rw.WriteHeader(http.StatusUnauthorized)
 		return
@@ -51,7 +67,7 @@ func (au *AuthUser) Handler(rw http.ResponseWriter, req *http.Request) {
 
 	rw.Header().Set(internal.HTTPHeaderAccessControllerAllowOrigin, "*")
 	rw.Header().Set(internal.HTTPHeaderContentType, "application/json")
-	rw.Header().Set(internal.HTTPHeaderAuthorization, fmt.Sprintf("Bearer %v", token))
+	rw.Header().Set(internal.HTTPHeaderAuthorization, addBearerPrefix(token))
 
 	rw.WriteHeader(http.StatusOK)
 	rw.Write(userInfo)
