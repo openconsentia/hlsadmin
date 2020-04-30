@@ -49,9 +49,9 @@ RUN go get github.com/GeertJohan/go.rice/rice && \
     go mod download && \
     env CGO_ENABLED=0 env GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o ./build/package/container/hlsadmin ./cmd/hlsadmin
 
-# Pack linux artefact into scratch container
-FROM scratch
+# Pack linux artefact into a container
+FROM hyperledger/sawtooth-shell:chime
 
-COPY --from=gobuild /opt/build/package/container/hlsadmin /hlsadmin
+COPY --from=gobuild /opt/build/package/container/hlsadmin /opt/hlsadmin
 
-CMD ["/hlsadmin", "start", "ui"]
+CMD ["/opt/hlsadmin", "start", "ui"]
