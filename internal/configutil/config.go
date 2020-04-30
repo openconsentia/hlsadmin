@@ -19,14 +19,17 @@ import (
 	"path"
 )
 
-const DefaultFolderName = ".hlsadmin"
+const (
+	defaultFolderName   = ".hlsadmin"
+	defaultSettingsYAML = "settings.yaml"
+)
 
 func homePathToConfigFolder() (string, error) {
 	home, err := os.UserHomeDir()
 	if err != nil {
 		return "", err
 	}
-	folder := path.Join(home, DefaultFolderName)
+	folder := path.Join(home, defaultFolderName)
 	return folder, nil
 }
 
@@ -44,5 +47,5 @@ func InitialiseConfigStore() (string, error) {
 }
 
 func NewSettingsFile(foldername string) (string, error) {
-	return newConfigurationFile(foldername, "settings.yaml", []byte{})
+	return newConfigurationFile(foldername, defaultSettingsYAML, []byte{})
 }
