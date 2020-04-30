@@ -21,11 +21,11 @@ COMMAND="$1"
 native_build_image=hls_devkit/native_build_image:current
 
 function packageContainer() {
-    docker build -f ./build/package/artefacts/Dockerfile -t ${APP_IMAGE_NAME}:${APP_IMAGE_TAG} .
+    docker build -f ./build/package/artefacts/container.dockerfile -t ${APP_IMAGE_NAME}:${APP_IMAGE_TAG} .
 }
 
 function packageNative(){
-    docker build -f ./build/package/artefacts/Dockerfile --target gobuild -t ${native_build_image} .
+    docker build -f ./build/package/artefacts/native.dockerfile -t ${native_build_image} .
     cleanNative
     id=$(docker create ${native_build_image})
     CONTAINER_ID="${id:0:12}"
@@ -51,8 +51,10 @@ function cleanImages() {
 }
 
 case $COMMAND in
-    "package")
+    "native")
         packageNative
+        ;;
+    "container")
         packageContainer
         ;;
     "clean")
@@ -60,6 +62,6 @@ case $COMMAND in
         cleanImages
         ;;
     *)
-        echo "$0 [ package | clean ]"
+        echo "$0 [ native | container | clean ]"
         ;;
 esac

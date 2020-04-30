@@ -47,9 +47,6 @@ COPY ./go.sum ./go.sum
 RUN go get github.com/GeertJohan/go.rice/rice && \
     ./build/go-rice.sh && \
     go mod download && \
-    env GOOS=linux GOARCH=amd64 go build -o ./build/package/linux/hlsadmin ./cmd/hlsadmin && \
-    env GOOS=darwin GOARCH=amd64 go build -o ./build/package/macOS/hlsadmin ./cmd/hlsadmin && \
-    env GOOS=windows GOARCH=amd64 go build -o ./build/package/windows/hlsadmin.exe ./cmd/hlsadmin && \
     env CGO_ENABLED=0 env GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o ./build/package/container/hlsadmin ./cmd/hlsadmin
 
 # Pack linux artefact into scratch container
