@@ -22,13 +22,13 @@ import (
 )
 
 var (
-	initHomeDir      func() (string, error)       = configutil.HomeConfigFolder
-	initConfigStore  func(string) (string, error) = configutil.InitialiseConfigStore
-	initSettingsFile func(string) (string, error) = configutil.InitialiseSettingsFile
+	initConfigHomeDir func() (string, error)       = configutil.HomeConfigFolder
+	initConfigStore   func(string) (string, error) = configutil.InitialiseConfigStore
+	initSettingsFile  func(string) (string, error) = configutil.InitialiseSettingsFile
 )
 
 func appInit() error {
-	home, err := initHomeDir()
+	home, err := initConfigHomeDir()
 	if err != nil {
 		return err
 	}

@@ -31,7 +31,7 @@ func TestStartCmdName(t *testing.T) {
 }
 
 func TestStartCmdNoHomeDir(t *testing.T) {
-	initHomeDir = func() (string, error) {
+	initConfigHomeDir = func() (string, error) {
 		return "", fmt.Errorf("No home")
 	}
 	initConfigStore = func(string) (string, error) {
@@ -43,7 +43,7 @@ func TestStartCmdNoHomeDir(t *testing.T) {
 
 func TestStartCmdAppInit(t *testing.T) {
 	initOpsCall := 0
-	initHomeDir = func() (string, error) {
+	initConfigHomeDir = func() (string, error) {
 		return "test", nil
 	}
 
