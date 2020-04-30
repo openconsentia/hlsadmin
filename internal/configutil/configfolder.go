@@ -20,13 +20,7 @@ import (
 )
 
 var (
-	configFolderExists func(name string) bool
-	configFolderCreate func(name string) error
-)
-
-func init() {
-
-	configFolderExists = func(name string) bool {
+	configFolderExists func(name string) bool = func(name string) bool {
 		_, err := os.Stat(name)
 		if os.IsExist(err) {
 			return true
@@ -34,14 +28,14 @@ func init() {
 		return false
 	}
 
-	configFolderCreate = func(name string) error {
+	configFolderCreate func(name string) error = func(name string) error {
 		err := os.MkdirAll(name, 0700)
 		if err != nil {
 			return err
 		}
 		return nil
 	}
-}
+)
 
 func newConfigurationFolder(name string) (string, error) {
 
