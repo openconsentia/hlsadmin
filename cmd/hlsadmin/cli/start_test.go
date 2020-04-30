@@ -15,6 +15,7 @@
 package cli
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -29,9 +30,24 @@ func TestStartCmdName(t *testing.T) {
 	}
 }
 
+func TestStartCmdNoHomeDir(t *testing.T) {
+	initHomeDir = func() (string, error) {
+		return "", fmt.Errorf("No home")
+	}
+	initConfigStore = func(string) (string, error) {
+		t.Fatal("There should be no attempt to initialise store")
+		return "", nil
+	}
+	appInit()
+}
+
 func TestStartCmdAppInit(t *testing.T) {
 	initOpsCall := 0
-	initConfigStore = func() (string, error) {
+	initHomeDir = func() (string, error) {
+		return "test", nil
+	}
+
+	initConfigStore = func(string) (string, error) {
 		initOpsCall += 1
 		return "", nil
 	}

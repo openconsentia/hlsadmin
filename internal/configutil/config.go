@@ -24,7 +24,7 @@ const (
 	defaultSettingsYAML = "settings.yaml"
 )
 
-func homePathToConfigFolder() (string, error) {
+func HomeConfigFolder() (string, error) {
 	home, err := os.UserHomeDir()
 	if err != nil {
 		return "", err
@@ -33,19 +33,15 @@ func homePathToConfigFolder() (string, error) {
 	return folder, nil
 }
 
-func InitialiseConfigStore() (string, error) {
-	configFolder, err := homePathToConfigFolder()
-	if err != nil {
-		return "", err
-	}
+func InitialiseConfigStore(folder string) (string, error) {
 
-	dir, err := newConfigurationFolder(configFolder)
+	dir, err := newConfigurationFolder(folder)
 	if err != nil {
 		return "", err
 	}
 	return dir, nil
 }
 
-func NewSettingsFile(foldername string) (string, error) {
+func InitialiseSettingsFile(foldername string) (string, error) {
 	return newConfigurationFile(foldername, defaultSettingsYAML, []byte{})
 }

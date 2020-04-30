@@ -26,7 +26,7 @@ func TestHomePathToConfigUtil(t *testing.T) {
 		t.Fatalf("Expected to get a path to home. Reason: %v", err)
 	}
 	expectedPathToConfig := path.Join(home, defaultFolderName)
-	gotPathToConfig, err := homePathToConfigFolder()
+	gotPathToConfig, err := HomeConfigFolder()
 	if err != nil {
 		t.Fatalf("Expected to create a path to config. Reason: %v", err)
 	}
