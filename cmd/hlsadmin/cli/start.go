@@ -21,18 +21,24 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var initOps func() (string, error)
+var (
+	initHomeDir      func() (string, error)       = configutil.HomeConfigFolder
+	initConfigStore  func(string) (string, error) = configutil.InitialiseConfigStore
+	initSettingsFile func(string) (string, error) = configutil.InitialiseSettingsFile
+)
 
-func init() {
-	initOps = configutil.InitialiseApp
-}
-
-func appInit() {
-	configDir, err := initOps()
+func appInit() error {
+	home, err := initHomeDir()
 	if err != nil {
-		log.Fatalf("Unable to start. Reason: %v", err)
+		return err
+	}
+
+	configDir, err := initConfigStore(home)
+	if err != nil {
+		return err
 	}
 	log.Printf("Created configuration store at %v", configDir)
+	return nil
 }
 
 func createStartCmd() *cobra.Command {
@@ -41,7 +47,10 @@ func createStartCmd() *cobra.Command {
 		Use:   "start",
 		Short: "choice of features",
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
-			appInit()
+			err := appInit()
+			if err != nil {
+				log.Fatalf("Unable to initialise app. Reason: %v", err)
+			}
 		},
 	}
 
