@@ -30,7 +30,7 @@ func homePathToConfigFolder() (string, error) {
 	return folder, nil
 }
 
-func InitialiseApp() (string, error) {
+func InitialiseConfigStore() (string, error) {
 	configFolder, err := homePathToConfigFolder()
 	if err != nil {
 		return "", err
