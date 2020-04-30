@@ -31,7 +31,7 @@ func TestStartCmdName(t *testing.T) {
 
 func TestStartCmdAppInit(t *testing.T) {
 	initOpsCall := 0
-	initOps = func() (string, error) {
+	initConfigStore = func() (string, error) {
 		initOpsCall += 1
 		return "", nil
 	}

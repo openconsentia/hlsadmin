@@ -21,14 +21,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var initOps func() (string, error)
-
-func init() {
-	initOps = configutil.InitialiseApp
-}
+var initConfigStore func() (string, error) = configutil.InitialiseConfigStore
 
 func appInit() {
-	configDir, err := initOps()
+	configDir, err := initConfigStore()
 	if err != nil {
 		log.Fatalf("Unable to start. Reason: %v", err)
 	}
