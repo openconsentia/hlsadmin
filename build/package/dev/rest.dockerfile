@@ -22,5 +22,7 @@ COPY ./internal ./internal
 COPY ./go.mod ./go.mod
 COPY ./go.sum ./go.sum
 
+ENV DEV="dev"
+
 RUN go mod download && \
     go build -o /usr/local/bin/hlsadmin ./cmd/hlsadmin

@@ -18,6 +18,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"hls-devkit/hlsadmin/internal"
+	"hls-devkit/hlsadmin/internal/usersmgmt"
+	"hls-devkit/hlsadmin/internal/usersmgmt/authenticators/jwt"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -74,19 +76,18 @@ func TestJWTAutheticator(t *testing.T) {
 
 	// Mocking
 	reqBody := mockAuthUserRequestBody(t)
-	expectedBearerToken := bearerToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c")
+	expectedBearerToken := "<token value>"
 
-	jwtAuthenticator = func(id string, secrets string) (bearerToken, userInfoBytes, error) {
-		tokenBytes := expectedBearerToken
-		info := userInfo{
+	authenticator = func(id string, secrets string) (usersmgmt.AuthenticatorResponse, error) {
+		info := usersmgmt.UserInfo{
 			ID:          id,
 			DisplayName: id,
 		}
-		userInfoBytes, err := json.Marshal(info)
-		if err != nil {
-			t.Fatalf("Unable to marshal authenticator response. Reason: %v", err)
+		response := jwt.Response{
+			Token:    expectedBearerToken,
+			UserInfo: info,
 		}
-		return tokenBytes, userInfoBytes, nil
+		return response, nil
 	}
 
 	// Initiate http test
@@ -104,7 +105,7 @@ func TestJWTAutheticator(t *testing.T) {
 
 	resHeader := rr.Header()
 	bearer := resHeader.Get(internal.HTTPHeaderAuthorization)
-	actualToken := removeBearerPrefix(bearer)
+	actualToken := jwt.RemoveBearerPrefix(bearer)
 	if expectedBearerToken != actualToken {
 		t.Errorf("Expected: %v Got: %v", expectedBearerToken, actualToken)
 	}
@@ -113,7 +114,7 @@ func TestJWTAutheticator(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Unable to extract response body. Reason: %v", err)
 	}
-	var info userInfo
+	var info usersmgmt.UserInfo
 	err = json.Unmarshal(resBody, &info)
 	if err != nil {
 		t.Fatalf("Unable to unmarshal user info. Reason: %v", err)

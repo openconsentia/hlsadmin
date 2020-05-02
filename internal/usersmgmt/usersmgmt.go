@@ -12,11 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package authuser
+package usersmgmt
 
-type userInfoBytes []byte
+type AuthenticatorResponse interface{}
 
-type userInfo struct {
+type Authenticator func(id string, secrets string) (AuthenticatorResponse, error)
+
+type UserInfo struct {
 	ID          string `json:"id"`
 	DisplayName string `json:"displayName"`
 }

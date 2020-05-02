@@ -16,7 +16,7 @@ package server
 
 import (
 	"hls-devkit/hlsadmin/internal"
-	"hls-devkit/hlsadmin/internal/usersmgmt/authuser"
+	"hls-devkit/hlsadmin/internal/usersmgmt/handlers/authuser"
 
 	"github.com/gorilla/mux"
 )
