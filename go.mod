@@ -4,8 +4,7 @@ go 1.13
 
 require (
 	github.com/GeertJohan/go.rice v1.0.0
-	github.com/Microsoft/go-winio v0.4.14 // indirect
-	github.com/aristanetworks/goarista v0.0.0-20200423211322-0b5ff220aee9 // indirect
+	github.com/Microsoft/go-winio v0.4.14 // indirectq
 	github.com/coreos/go-etcd v2.0.0+incompatible // indirect
 	github.com/cpuguy83/go-md2man v1.0.10 // indirect
 	github.com/docker/distribution v2.7.1+incompatible // indirect

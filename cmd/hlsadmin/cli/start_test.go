@@ -15,7 +15,7 @@
 package cli
 
 import (
-	"fmt"
+	"errors"
 	"testing"
 )
 
@@ -30,29 +30,54 @@ func TestStartCmdName(t *testing.T) {
 	}
 }
 
-func TestStartCmdNoHomeDir(t *testing.T) {
-	initHomeDir = func() (string, error) {
-		return "", fmt.Errorf("No home")
+func TestAppInitConfigYamlNoHome(t *testing.T) {
+	initHomeConfigDir = func() (string, error) {
+		return "", errors.New("Failed")
 	}
-	initConfigStore = func(string) (string, error) {
-		t.Fatal("There should be no attempt to initialise store")
+	initConfigStore = func(name string) (string, error) {
+		t.Fatal("Expected no call to initialise home config")
 		return "", nil
 	}
-	appInit()
+	initConfigYaml = func(name string) (string, error) {
+		t.Fatal("Expected no call to initialise config yaml")
+		return "", nil
+	}
+
+	appInitConfigYaml()
 }
 
-func TestStartCmdAppInit(t *testing.T) {
-	initOpsCall := 0
-	initHomeDir = func() (string, error) {
-		return "test", nil
+func TestAppInitConfigYamlHomeFoundStoreFailed(t *testing.T) {
+	initHomeConfigDir = func() (string, error) {
+		return "./test", nil
 	}
-
-	initConfigStore = func(string) (string, error) {
-		initOpsCall += 1
+	initConfigStore = func(name string) (string, error) {
+		return "", errors.New("Failed")
+	}
+	initConfigYaml = func(name string) (string, error) {
+		t.Fatal("Expected no call to initialise config yaml")
 		return "", nil
 	}
-	appInit()
-	if initOpsCall != 1 {
-		t.Fatalf("Expected: 1 Got: %d", initOpsCall)
+
+	appInitConfigYaml()
+}
+
+func TestAppInitConfigYamlFound(t *testing.T) {
+	expectedYaml := "./test/settings.yaml"
+	initHomeConfigDir = func() (string, error) {
+		return "./test", nil
+	}
+	initConfigStore = func(name string) (string, error) {
+		return name, nil
+	}
+	initConfigYaml = func(name string) (string, error) {
+		return expectedYaml, nil
+	}
+
+	gotYaml, err := appInitConfigYaml()
+	if err != nil {
+		t.Fatalf("Unable to create config yaml. Reason: %v", err)
+	}
+	if expectedYaml != gotYaml {
+		t.Fatalf("Expected: %s Got: %s", expectedYaml, gotYaml)
 	}
 }

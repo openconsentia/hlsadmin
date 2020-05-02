@@ -5,7 +5,7 @@ services:
     hlsadmin:
         image: ${APP_IMAGE_NAME}:${APP_IMAGE_TAG}
         container_name: hlsadmin
-        command: ["/hlsadmin","start", "ui"]
+        command: ["/opt/hlsadmin","start", "ui"]
         ports:
             - 80:80
         networks:

@@ -36,3 +36,28 @@ func TestNewConfigFolderWhenExist(t *testing.T) {
 	}
 
 }
+
+func TestNewConfigFolderWhenNotExist(t *testing.T) {
+
+	configFolderCreateCall := 0
+
+	configFolderExists = func(name string) bool {
+		return false
+	}
+
+	configFolderCreate = func(name string) error {
+		configFolderCreateCall += 1
+		return nil
+	}
+
+	inputName := "./test"
+	folder, _ := newConfigurationFolder(inputName)
+	if folder != path.Join(inputName) {
+		t.Fatalf("Expected: %s Got: %s", path.Join(inputName), folder)
+	}
+
+	if configFolderCreateCall != 1 {
+		t.Fatalf("Expected create config folder to be called 1 time. It was called: %d", configFolderCreateCall)
+	}
+
+}
