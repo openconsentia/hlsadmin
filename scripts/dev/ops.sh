@@ -14,15 +14,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-export REACT_IMAGE_NAME=paulwizviz/hlsadmin-react
-export REST_IMAGE_NAME=paulwizviz/hlsadmin-rest
+export REACT_IMAGE_NAME=paulwizviz/hlsadmin-dev-react
+export REST_IMAGE_NAME=paulwizviz/hlsadmin-dev-rest
 export IMAGE_TAG=dev
 
 COMMAND="$1"
 
 function package() {
-    docker build -f ./build/package/dev/react/Dockerfile -t ${REACT_IMAGE_NAME}:${IMAGE_TAG} .
-    docker build -f ./build/package/dev/rest/Dockerfile -t ${REST_IMAGE_NAME}:${IMAGE_TAG} .
+    docker build -f ./build/package/dev/react.dockerfile -t ${REACT_IMAGE_NAME}:${IMAGE_TAG} .
+    docker build -f ./build/package/dev/rest.dockerfile -t ${REST_IMAGE_NAME}:${IMAGE_TAG} .
 }
 
 function run() {
