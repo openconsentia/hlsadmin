@@ -17,9 +17,23 @@ package authuser
 import (
 	"encoding/json"
 	"hls-devkit/hlsadmin/internal"
+	"hls-devkit/hlsadmin/internal/usersmgmt"
+	"hls-devkit/hlsadmin/internal/usersmgmt/authenticators/jwt"
 	"io/ioutil"
 	"net/http"
+	"os"
 )
+
+var authenticator usersmgmt.Authenticator
+
+func init() {
+	_, exists := os.LookupEnv("DEV")
+	if exists {
+		authenticator = jwt.MockAuthenticator
+	} else {
+		authenticator = jwt.Authenticator
+	}
+}
 
 type credentials struct {
 	ID      string `json:"id"`
@@ -59,7 +73,7 @@ func Handler(rw http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	token, userInfo, err := jwtAuthenticator(cred.ID, cred.Secrets)
+	authResponse, err := authenticator(cred.ID, cred.Secrets)
 	if err != nil {
 		rw.WriteHeader(http.StatusUnauthorized)
 		return
@@ -67,8 +81,22 @@ func Handler(rw http.ResponseWriter, req *http.Request) {
 
 	rw.Header().Set(internal.HTTPHeaderAccessControllerAllowOrigin, "*")
 	rw.Header().Set(internal.HTTPHeaderContentType, "application/json")
-	rw.Header().Set(internal.HTTPHeaderAuthorization, addBearerPrefix(token))
 
+	var userInfo usersmgmt.UserInfo
+	switch v := authResponse.(type) {
+	case jwt.Response:
+		rw.Header().Set(internal.HTTPHeaderAuthorization, jwt.AddBearerPrefix(v.Token))
+		userInfo = v.UserInfo
+	default:
+		rw.WriteHeader(http.StatusNoContent)
+		return
+	}
+
+	userInfoInBytes, err := json.Marshal(userInfo)
+	if err != nil {
+		rw.WriteHeader(http.StatusNoContent)
+		return
+	}
 	rw.WriteHeader(http.StatusOK)
-	rw.Write(userInfo)
+	rw.Write(userInfoInBytes)
 }
