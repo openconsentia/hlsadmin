@@ -12,21 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package configutil
+package statestore
 
 import (
-	"io/ioutil"
 	"os"
 	"path"
 )
 
 var (
-	configFileExists func(name string) bool
-	configFileCreate func(name string, content []byte) error
-)
-
-func init() {
-	configFileExists = func(name string) bool {
+	configFolderExists func(name string) bool = func(name string) bool {
 		_, err := os.Stat(name)
 		if os.IsExist(err) {
 			return true
@@ -34,19 +28,24 @@ func init() {
 		return false
 	}
 
-	configFileCreate = func(filename string, content []byte) error {
-		err := ioutil.WriteFile(filename, content, 0644)
+	configFolderCreate func(name string) error = func(name string) error {
+		err := os.MkdirAll(name, 0700)
 		if err != nil {
 			return err
 		}
 		return nil
 	}
-}
+)
 
-func newConfigurationFile(foldername string, filename string, content []byte) (string, error) {
-	filenameFull := path.Join(foldername, filename)
-	if !configFileExists(filenameFull) {
-		configFileCreate(filenameFull, content)
+func NewFolder(name string) (string, error) {
+
+	dir := path.Join(name)
+	if !configFolderExists(name) {
+		err := configFolderCreate(name)
+		if err != nil {
+			return "", err
+		}
 	}
-	return filenameFull, nil
+
+	return dir, nil
 }

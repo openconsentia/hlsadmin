@@ -12,40 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package configutil
+package setting
 
 import (
 	"os"
 	"path"
+	"testing"
 )
 
-var (
-	configFolderExists func(name string) bool = func(name string) bool {
-		_, err := os.Stat(name)
-		if os.IsExist(err) {
-			return true
-		}
-		return false
+func TestHomePathToConfigUtil(t *testing.T) {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		t.Fatalf("Expected to get a path to home. Reason: %v", err)
 	}
-
-	configFolderCreate func(name string) error = func(name string) error {
-		err := os.MkdirAll(name, 0700)
-		if err != nil {
-			return err
-		}
-		return nil
+	expectedPathToConfig := path.Join(home, defaultHomeConfigBaseName)
+	gotPathToConfig, err := SettingsHomeFolder()
+	if err != nil {
+		t.Fatalf("Expected to create a path to config. Reason: %v", err)
 	}
-)
-
-func newConfigurationFolder(name string) (string, error) {
-
-	dir := path.Join(name)
-	if !configFolderExists(name) {
-		err := configFolderCreate(name)
-		if err != nil {
-			return "", err
-		}
+	if expectedPathToConfig != gotPathToConfig {
+		t.Fatalf("Expected: %s Got: %s", expectedPathToConfig, gotPathToConfig)
 	}
-
-	return dir, nil
 }

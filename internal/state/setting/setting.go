@@ -12,25 +12,38 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package configutil
+package setting
 
 import (
+	"hls-devkit/hlsadmin/internal/state/statestore"
 	"os"
 	"path"
-	"testing"
 )
 
-func TestHomePathToConfigUtil(t *testing.T) {
+const (
+	defaultHomeConfigBaseName = ".hlsadmin"
+	defaultSettingsYAML       = "settings.yaml"
+)
+
+func SettingsHomeFolder() (string, error) {
+
 	home, err := os.UserHomeDir()
 	if err != nil {
-		t.Fatalf("Expected to get a path to home. Reason: %v", err)
+		return "", err
 	}
-	expectedPathToConfig := path.Join(home, defaultHomeConfigBaseName)
-	gotPathToConfig, err := HomeConfigFolder()
+	folder := path.Join(home, defaultHomeConfigBaseName)
+	return folder, nil
+}
+
+func InitialiseSettingsStore(folder string) (string, error) {
+
+	dir, err := statestore.NewFolder(folder)
 	if err != nil {
-		t.Fatalf("Expected to create a path to config. Reason: %v", err)
+		return "", err
 	}
-	if expectedPathToConfig != gotPathToConfig {
-		t.Fatalf("Expected: %s Got: %s", expectedPathToConfig, gotPathToConfig)
-	}
+	return dir, nil
+}
+
+func InitialiseSettingsYaml(foldername string) (string, error) {
+	return statestore.NewFile(foldername, defaultSettingsYAML, []byte{})
 }

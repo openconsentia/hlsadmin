@@ -43,7 +43,7 @@ func TestAppInitConfigYamlNoHome(t *testing.T) {
 		return "", nil
 	}
 
-	appInitConfigYaml()
+	nativeSettingsYaml()
 }
 
 func TestAppInitConfigYamlHomeFoundStoreFailed(t *testing.T) {
@@ -58,7 +58,7 @@ func TestAppInitConfigYamlHomeFoundStoreFailed(t *testing.T) {
 		return "", nil
 	}
 
-	appInitConfigYaml()
+	nativeSettingsYaml()
 }
 
 func TestAppInitConfigYamlFound(t *testing.T) {
@@ -73,7 +73,7 @@ func TestAppInitConfigYamlFound(t *testing.T) {
 		return expectedYaml, nil
 	}
 
-	gotYaml, err := appInitConfigYaml()
+	gotYaml, err := nativeSettingsYaml()
 	if err != nil {
 		t.Fatalf("Unable to create config yaml. Reason: %v", err)
 	}
