@@ -15,19 +15,33 @@
 package cli
 
 import (
-	"hls-devkit/hlsadmin/internal/configutil"
+	"hls-devkit/hlsadmin/internal/state/setting"
 	"log"
+	"os"
 
 	"github.com/spf13/cobra"
 )
 
 var (
-	initHomeConfigDir func() (string, error)       = configutil.HomeConfigFolder
-	initConfigStore   func(string) (string, error) = configutil.InitialiseConfigStore
-	initConfigYaml    func(string) (string, error) = configutil.InitialiseConfigYaml
+	initHomeConfigDir func() (string, error)       = setting.SettingsHomeFolder
+	initConfigStore   func(string) (string, error) = setting.InitialiseSettingsStore
+	initConfigYaml    func(string) (string, error) = setting.InitialiseSettingsYaml
 )
 
-func appInitConfigYaml() (string, error) {
+func containerSettingsYam() (string, error) {
+	configDir := "/var/hlsadmin"
+	store, err := initConfigStore(configDir)
+	if err != nil {
+		return "", err
+	}
+	configYaml, err := initConfigYaml(store)
+	if err != nil {
+		return "", err
+	}
+	return configYaml, nil
+}
+
+func nativeSettingsYaml() (string, error) {
 	configDir, err := initHomeConfigDir()
 	if err != nil {
 		return "", err
@@ -49,11 +63,20 @@ func createStartCmd() *cobra.Command {
 		Use:   "start",
 		Short: "choice of features",
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
-			yamlFile, err := appInitConfigYaml()
-			if err != nil {
-				log.Fatalf("Unable to initialise app. Reason: %v", err)
+			_, envIsSet := os.LookupEnv("CONTAINER")
+			if envIsSet {
+				yamlfile, err := containerSettingsYam()
+				if err != nil {
+					log.Fatalf("Unable to create yaml settings. Reason: %v", err)
+				}
+				log.Printf("Settings file created: %v", yamlfile)
+			} else {
+				yamlfile, err := nativeSettingsYaml()
+				if err != nil {
+					log.Fatalf("Unable to create yaml settings. Reason: %v", err)
+				}
+				log.Printf("Settings file created: %v", yamlfile)
 			}
-			log.Printf("Created configuration yaml at %v", yamlFile)
 		},
 	}
 

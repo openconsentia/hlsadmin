@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package configutil
+package statestore
 
 import (
 	"path"
 	"testing"
 )
 
-func TestNewConfigFolderWhenExist(t *testing.T) {
+func TestNewFolderWhenExist(t *testing.T) {
 	configFolderExists = func(name string) bool {
 		return true
 	}
@@ -30,14 +30,14 @@ func TestNewConfigFolderWhenExist(t *testing.T) {
 	}
 
 	inputName := "./test"
-	folder, _ := newConfigurationFolder(inputName)
+	folder, _ := NewFolder(inputName)
 	if folder != path.Join(inputName) {
 		t.Fatalf("Expected: %s Got: %s", path.Join(inputName), folder)
 	}
 
 }
 
-func TestNewConfigFolderWhenNotExist(t *testing.T) {
+func TestNewFolderWhenNotExist(t *testing.T) {
 
 	configFolderCreateCall := 0
 
@@ -51,7 +51,7 @@ func TestNewConfigFolderWhenNotExist(t *testing.T) {
 	}
 
 	inputName := "./test"
-	folder, _ := newConfigurationFolder(inputName)
+	folder, _ := NewFolder(inputName)
 	if folder != path.Join(inputName) {
 		t.Fatalf("Expected: %s Got: %s", path.Join(inputName), folder)
 	}

@@ -52,6 +52,8 @@ RUN go get github.com/GeertJohan/go.rice/rice && \
 # Pack linux artefact into a container
 FROM hyperledger/sawtooth-shell:chime
 
+ENV CONTAINER="container"
+
 COPY --from=gobuild /opt/build/package/container/hlsadmin /opt/hlsadmin
 
 CMD ["/opt/hlsadmin", "start", "ui"]

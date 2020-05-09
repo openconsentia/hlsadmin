@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package configutil
+package statestore
 
 import "testing"
 
@@ -28,7 +28,7 @@ func TestCreateFileWhenItDoesNotExist(t *testing.T) {
 		return nil
 	}
 
-	newConfigurationFile("./test", "config.yaml", []byte("Hello"))
+	NewFile("./test", "config.yaml", []byte("Hello"))
 
 	if configFolderCreateCalled != 1 {
 		t.Fatalf("Expected: 1 Got: %d", configFolderCreateCalled)
@@ -45,6 +45,6 @@ func TestCreateFileWhenItExits(t *testing.T) {
 		return nil
 	}
 
-	newConfigurationFile("./test", "config.yaml", []byte("Hello"))
+	NewFile("./test", "config.yaml", []byte("Hello"))
 
 }
