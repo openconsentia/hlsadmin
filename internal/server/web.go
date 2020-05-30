@@ -15,7 +15,6 @@
 package server
 
 import (
-	"hls-devkit/hlsadmin/internal"
 	"net/http"
 
 	rice "github.com/GeertJohan/go.rice"
@@ -23,5 +22,5 @@ import (
 )
 
 func WebRun(router *mux.Router) {
-	router.PathPrefix(internal.URLRootPath).Handler(http.FileServer(rice.MustFindBox("../../web").HTTPBox()))
+	router.PathPrefix(URLRootPath).Handler(http.FileServer(rice.MustFindBox("../../web").HTTPBox()))
 }

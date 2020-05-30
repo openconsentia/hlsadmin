@@ -12,13 +12,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package usersmgmt
+package json
 
-type AuthenticatorResponse interface{}
+import (
+	jsonstl "encoding/json"
+	"hls-devkit/hlsadmin/internal/authuser"
+)
 
-type Authenticator func(id string, secrets string) (AuthenticatorResponse, error)
+type seralizerSvc struct{}
 
-type UserInfo struct {
-	ID          string `json:"id"`
-	DisplayName string `json:"displayName"`
+func (s *seralizerSvc) MarshalAccessCred(accessCred *authuser.AccessCredential) ([]byte, error) {
+	return jsonstl.Marshal(accessCred)
+}
+func (s *seralizerSvc) UnmarshalLoginCred(cred []byte) (*authuser.LoginCredential, error) {
+
+	var loginCred authuser.LoginCredential
+
+	err := jsonstl.Unmarshal(cred, &loginCred)
+	if err != nil {
+		return nil, err
+	}
+
+	return &loginCred, nil
+}
+
+func NewSerializer() authuser.Seralizer {
+	return &seralizerSvc{}
 }
