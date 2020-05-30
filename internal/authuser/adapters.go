@@ -12,13 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package server
+package authuser
 
-import (
-	"github.com/gorilla/mux"
-)
+// Seralizer user credentials
+type Seralizer interface {
+	MarshalAccessCred(*AccessCredential) ([]byte, error)
+	UnmarshalLoginCred([]byte) (*LoginCredential, error)
+}
 
-func RESTRun(router *mux.Router) {
-	router.HandleFunc(URLAuthPath, authUserHdler)
-	router.Use(mux.CORSMethodMiddleware(router))
+// CredentialRepo is an interface to the cred repository
+type CredentialRepo interface {
+	FindLoginCred(string) (*LoginCredential, error)
+	FindAccessCred(string) (*AccessCredential, error)
+}
+
+// Authenticator is an interface to a credential service
+type Authenticator interface {
+	WithLoginCred(*LoginCredential) (*AccessCredential, error)
 }

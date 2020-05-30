@@ -12,13 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package server
+package file
 
-import (
-	"github.com/gorilla/mux"
-)
+import "testing"
 
-func RESTRun(router *mux.Router) {
-	router.HandleFunc(URLAuthPath, authUserHdler)
-	router.Use(mux.CORSMethodMiddleware(router))
+func TestMockCredentialRepo(t *testing.T) {
+	credRepo := NewMockCredentialRepoService()
+	cred, _ := credRepo.FindAccessCred("id")
+	t.Log(cred)
 }
