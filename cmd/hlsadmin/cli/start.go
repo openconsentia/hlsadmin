@@ -15,47 +15,12 @@
 package cli
 
 import (
-	"hls-devkit/hlsadmin/internal/state/setting"
+	"hls-devkit/hlsadmin/internal/repo/file"
 	"log"
 	"os"
 
 	"github.com/spf13/cobra"
 )
-
-var (
-	initHomeConfigDir func() (string, error)       = setting.SettingsHomeFolder
-	initConfigStore   func(string) (string, error) = setting.InitialiseSettingsStore
-	initConfigYaml    func(string) (string, error) = setting.InitialiseSettingsYaml
-)
-
-func containerSettingsYam() (string, error) {
-	configDir := "/var/hlsadmin"
-	store, err := initConfigStore(configDir)
-	if err != nil {
-		return "", err
-	}
-	configYaml, err := initConfigYaml(store)
-	if err != nil {
-		return "", err
-	}
-	return configYaml, nil
-}
-
-func nativeSettingsYaml() (string, error) {
-	configDir, err := initHomeConfigDir()
-	if err != nil {
-		return "", err
-	}
-	store, err := initConfigStore(configDir)
-	if err != nil {
-		return "", err
-	}
-	configYaml, err := initConfigYaml(store)
-	if err != nil {
-		return "", err
-	}
-	return configYaml, nil
-}
 
 func createStartCmd() *cobra.Command {
 
@@ -63,20 +28,16 @@ func createStartCmd() *cobra.Command {
 		Use:   "start",
 		Short: "choice of features",
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
-			_, envIsSet := os.LookupEnv("CONTAINER")
-			if envIsSet {
-				yamlfile, err := containerSettingsYam()
-				if err != nil {
-					log.Fatalf("Unable to create yaml settings. Reason: %v", err)
-				}
-				log.Printf("Settings file created: %v", yamlfile)
-			} else {
-				yamlfile, err := nativeSettingsYaml()
-				if err != nil {
-					log.Fatalf("Unable to create yaml settings. Reason: %v", err)
-				}
-				log.Printf("Settings file created: %v", yamlfile)
+			_, isContainer := os.LookupEnv("CONTAINER")
+			settingLoc, err := file.SettingsLocation(isContainer)
+			if err != nil {
+				log.Fatalf("Unable to create settings location. Reason: %v", err)
 			}
+			settingsFile, err := file.InitSettingLoc(settingLoc, "settings.yaml")
+			if err != nil {
+				log.Fatalf("Unable to create settings file. Reason: %v", err)
+			}
+			log.Printf("%v created", settingsFile)
 		},
 	}
 

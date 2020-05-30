@@ -15,7 +15,6 @@
 package cli
 
 import (
-	"errors"
 	"testing"
 )
 
@@ -27,57 +26,5 @@ func TestStartCmdName(t *testing.T) {
 	got := cmd.Use
 	if expected != got {
 		t.Errorf("Expected: %v Got: %v", expected, got)
-	}
-}
-
-func TestAppInitConfigYamlNoHome(t *testing.T) {
-	initHomeConfigDir = func() (string, error) {
-		return "", errors.New("Failed")
-	}
-	initConfigStore = func(name string) (string, error) {
-		t.Fatal("Expected no call to initialise home config")
-		return "", nil
-	}
-	initConfigYaml = func(name string) (string, error) {
-		t.Fatal("Expected no call to initialise config yaml")
-		return "", nil
-	}
-
-	nativeSettingsYaml()
-}
-
-func TestAppInitConfigYamlHomeFoundStoreFailed(t *testing.T) {
-	initHomeConfigDir = func() (string, error) {
-		return "./test", nil
-	}
-	initConfigStore = func(name string) (string, error) {
-		return "", errors.New("Failed")
-	}
-	initConfigYaml = func(name string) (string, error) {
-		t.Fatal("Expected no call to initialise config yaml")
-		return "", nil
-	}
-
-	nativeSettingsYaml()
-}
-
-func TestAppInitConfigYamlFound(t *testing.T) {
-	expectedYaml := "./test/settings.yaml"
-	initHomeConfigDir = func() (string, error) {
-		return "./test", nil
-	}
-	initConfigStore = func(name string) (string, error) {
-		return name, nil
-	}
-	initConfigYaml = func(name string) (string, error) {
-		return expectedYaml, nil
-	}
-
-	gotYaml, err := nativeSettingsYaml()
-	if err != nil {
-		t.Fatalf("Unable to create config yaml. Reason: %v", err)
-	}
-	if expectedYaml != gotYaml {
-		t.Fatalf("Expected: %s Got: %s", expectedYaml, gotYaml)
 	}
 }

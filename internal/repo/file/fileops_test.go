@@ -14,9 +14,13 @@
 
 package file
 
-import "testing"
+import (
+	"os"
+	"path"
+	"testing"
+)
 
-func TestCreateFileFolderOps(t *testing.T) {
+func TestCreateFileOps(t *testing.T) {
 
 	t.Run("Folder does not exists", func(t *testing.T) {
 		folderCreateCall := 0
@@ -34,11 +38,11 @@ func TestCreateFileFolderOps(t *testing.T) {
 			return true
 		}
 
-		fileCreate = func(name string) error {
+		fileCreate = func(name string, content []byte) error {
 			return nil
 		}
 
-		Create("./test", "test")
+		Create("./test", "test", []byte{})
 		if folderCreateCall != 1 {
 			t.Fatalf("Expected: 1 Got: %d", folderCreateCall)
 		}
@@ -60,11 +64,11 @@ func TestCreateFileFolderOps(t *testing.T) {
 				return false
 			}
 
-			fileCreate = func(name string) error {
+			fileCreate = func(name string, content []byte) error {
 				fileCreateCalled++
 				return nil
 			}
-			Create("./test", "test")
+			Create("./test", "test", []byte{})
 			if fileCreateCalled != 1 {
 				t.Fatalf("Expected: 1 Got: %d", fileCreateCalled)
 			}
@@ -75,12 +79,24 @@ func TestCreateFileFolderOps(t *testing.T) {
 				return true
 			}
 
-			fileCreate = func(name string) error {
+			fileCreate = func(name string, content []byte) error {
 				t.Fatal("File create operations should not be called")
 				return nil
 			}
-			Create("./test", "test")
+			Create("./test", "test", []byte{})
 		})
 	})
 
+}
+
+func TestCreateOps(t *testing.T) {
+	testFolder := path.Join(".", "test")
+	settings, err := Create(testFolder, "settings.yaml", []byte{})
+	if err != nil {
+		t.Fatalf("Expected: no error Got: %v", err)
+	}
+	defer os.RemoveAll(testFolder)
+	if settings == "" {
+		t.Fatal("Settings file expected")
+	}
 }

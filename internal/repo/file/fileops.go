@@ -14,17 +14,47 @@
 
 package file
 
-import "path"
-
-var (
-	folderExist  func(string) bool
-	folderCreate func(string) error
-	fileExist    func(string) bool
-	fileCreate   func(string) error
+import (
+	"io/ioutil"
+	"os"
+	"path"
 )
 
-func Create(folder string, name string) (string, error) {
-	fldr := path.Join(name)
+var (
+	folderExist func(string) bool = func(name string) bool {
+		_, err := os.Stat(name)
+		if os.IsExist(err) {
+			return true
+		}
+		return false
+	}
+
+	folderCreate func(string) error = func(name string) error {
+		err := os.MkdirAll(name, 0700)
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+
+	fileExist func(string) bool = func(name string) bool {
+		_, err := os.Stat(name)
+		if os.IsExist(err) {
+			return true
+		}
+		return false
+	}
+	fileCreate func(string, []byte) error = func(name string, content []byte) error {
+		err := ioutil.WriteFile(name, content, 0644)
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+)
+
+func Create(folder string, name string, content []byte) (string, error) {
+	fldr := path.Join(folder)
 	if !folderExist(fldr) {
 		err := folderCreate(fldr)
 		if err != nil {
@@ -34,7 +64,7 @@ func Create(folder string, name string) (string, error) {
 
 	fullFilename := path.Join(fldr, name)
 	if !fileExist(fullFilename) {
-		err := fileCreate(fullFilename)
+		err := fileCreate(fullFilename, content)
 		if err != nil {
 			return "", err
 		}
