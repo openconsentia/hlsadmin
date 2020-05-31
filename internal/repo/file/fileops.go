@@ -12,15 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package statestore
+package file
 
 import (
+	"io/ioutil"
 	"os"
 	"path"
 )
 
 var (
-	configFolderExists func(name string) bool = func(name string) bool {
+	folderExist func(string) bool = func(name string) bool {
 		_, err := os.Stat(name)
 		if os.IsExist(err) {
 			return true
@@ -28,8 +29,23 @@ var (
 		return false
 	}
 
-	configFolderCreate func(name string) error = func(name string) error {
+	folderCreate func(string) error = func(name string) error {
 		err := os.MkdirAll(name, 0700)
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+
+	fileExist func(string) bool = func(name string) bool {
+		_, err := os.Stat(name)
+		if os.IsExist(err) {
+			return true
+		}
+		return false
+	}
+	fileCreate func(string, []byte) error = func(name string, content []byte) error {
+		err := ioutil.WriteFile(name, content, 0644)
 		if err != nil {
 			return err
 		}
@@ -37,15 +53,22 @@ var (
 	}
 )
 
-func NewFolder(name string) (string, error) {
-
-	dir := path.Join(name)
-	if !configFolderExists(name) {
-		err := configFolderCreate(name)
+func Create(folder string, name string, content []byte) (string, error) {
+	fldr := path.Join(folder)
+	if !folderExist(fldr) {
+		err := folderCreate(fldr)
 		if err != nil {
 			return "", err
 		}
 	}
 
-	return dir, nil
+	fullFilename := path.Join(fldr, name)
+	if !fileExist(fullFilename) {
+		err := fileCreate(fullFilename, content)
+		if err != nil {
+			return "", err
+		}
+	}
+
+	return fullFilename, nil
 }

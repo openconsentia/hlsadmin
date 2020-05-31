@@ -12,25 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package setting
+package file
 
 import (
+	"fmt"
 	"os"
-	"path"
-	"testing"
 )
 
-func TestHomePathToConfigUtil(t *testing.T) {
-	home, err := os.UserHomeDir()
+const configFolder = "hlsadmin"
+
+func SettingsLocation(isCOntainer bool) (string, error) {
+	if isCOntainer {
+		return fmt.Sprintf("/etc/%v", configFolder), nil
+	}
+	location, err := os.UserHomeDir()
 	if err != nil {
-		t.Fatalf("Expected to get a path to home. Reason: %v", err)
+		return "", err
 	}
-	expectedPathToConfig := path.Join(home, defaultHomeConfigBaseName)
-	gotPathToConfig, err := SettingsHomeFolder()
-	if err != nil {
-		t.Fatalf("Expected to create a path to config. Reason: %v", err)
-	}
-	if expectedPathToConfig != gotPathToConfig {
-		t.Fatalf("Expected: %s Got: %s", expectedPathToConfig, gotPathToConfig)
-	}
+	return fmt.Sprintf("%v%v.%v", location, string(os.PathSeparator), configFolder), nil
+}
+
+func InitSettingLoc(location string, filename string) (string, error) {
+	return Create(location, filename, []byte{})
 }
