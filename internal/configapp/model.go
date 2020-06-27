@@ -12,26 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package file
+package configapp
 
-import (
-	"fmt"
-	"os"
-)
-
-const configFolder = "hlsadmin"
-
-func SettingsLocation(useLinuxEtc bool) (string, error) {
-	if useLinuxEtc {
-		return fmt.Sprintf("/etc/%v", configFolder), nil
-	}
-	location, err := os.UserHomeDir()
-	if err != nil {
-		return "", err
-	}
-	return fmt.Sprintf("%v%v.%v", location, string(os.PathSeparator), configFolder), nil
+type CredRepo struct{
+	Name string `yaml:"Name"`
 }
 
-func InitSettingLoc(location string, filename string) (string, error) {
-	return Create(location, filename, []byte{})
+type Setting struct{
+	Cred CredRepo `yaml:"CredRepo"`
 }

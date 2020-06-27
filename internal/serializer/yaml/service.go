@@ -1,5 +1,3 @@
-// Copyright 2020 Paul Sitoh
-//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -12,26 +10,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package file
+package yaml
 
 import (
-	"fmt"
-	"os"
+	"hls-devkit/hlsadmin/internal/configapp"
+
+	goyaml "gopkg.in/yaml.v2"
 )
 
-const configFolder = "hlsadmin"
+type serializeSvc struct{}
 
-func SettingsLocation(useLinuxEtc bool) (string, error) {
-	if useLinuxEtc {
-		return fmt.Sprintf("/etc/%v", configFolder), nil
-	}
-	location, err := os.UserHomeDir()
-	if err != nil {
-		return "", err
-	}
-	return fmt.Sprintf("%v%v.%v", location, string(os.PathSeparator), configFolder), nil
-}
-
-func InitSettingLoc(location string, filename string) (string, error) {
-	return Create(location, filename, []byte{})
+func (s *serializeSvc) MarshalSettings(setting *configapp.Setting) ([]byte, error) {
+	return goyaml.Marshal(setting)
 }

@@ -16,6 +16,8 @@ package cli
 
 import (
 	"fmt"
+	"hls-devkit/hlsadmin/internal/repo/file"
+	"log"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -30,9 +32,23 @@ based network.`,
 
 func init() {
 
-	startCmd := createStartCmd()
+	cobra.OnInitialize(initApp)
 
+	startCmd := createStartCmd()
 	rootCmd.AddCommand(startCmd)
+}
+
+func initApp() {
+	_, isContainer := os.LookupEnv("CONTAINER")
+	settingLoc, err := file.SettingsLocation(isContainer)
+	if err != nil {
+		log.Fatalf("Unable to create settings location. Reason: %v", err)
+	}
+	settingsFile, err := file.InitSettingLoc(settingLoc, "settings.yaml")
+	if err != nil {
+		log.Fatalf("Unable to create settings file. Reason: %v", err)
+	}
+	log.Printf("%v created", settingsFile)
 }
 
 // Execute is the cli entry point
