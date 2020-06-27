@@ -15,10 +15,6 @@
 package cli
 
 import (
-	"hls-devkit/hlsadmin/internal/repo/file"
-	"log"
-	"os"
-
 	"github.com/spf13/cobra"
 )
 
@@ -27,18 +23,18 @@ func createStartCmd() *cobra.Command {
 	startCmd := &cobra.Command{
 		Use:   "start",
 		Short: "choice of features",
-		PersistentPreRun: func(cmd *cobra.Command, args []string) {
-			_, isContainer := os.LookupEnv("CONTAINER")
-			settingLoc, err := file.SettingsLocation(isContainer)
-			if err != nil {
-				log.Fatalf("Unable to create settings location. Reason: %v", err)
-			}
-			settingsFile, err := file.InitSettingLoc(settingLoc, "settings.yaml")
-			if err != nil {
-				log.Fatalf("Unable to create settings file. Reason: %v", err)
-			}
-			log.Printf("%v created", settingsFile)
-		},
+		// PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		// 	_, isContainer := os.LookupEnv("CONTAINER")
+		// 	settingLoc, err := file.SettingsLocation(isContainer)
+		// 	if err != nil {
+		// 		log.Fatalf("Unable to create settings location. Reason: %v", err)
+		// 	}
+		// 	settingsFile, err := file.InitSettingLoc(settingLoc, "settings.yaml")
+		// 	if err != nil {
+		// 		log.Fatalf("Unable to create settings file. Reason: %v", err)
+		// 	}
+		// 	log.Printf("%v created", settingsFile)
+		// },
 	}
 
 	uiCmd := uiCmdBlder.cli()
