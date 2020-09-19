@@ -15,24 +15,41 @@
 # node build phase
 # In this phase, we pull artefacts to build ReactJS webapp for
 # development
-FROM node:13.10.1 as nodebuild
+ARG NODE_VER
+ARG GO_VER
+
+FROM node:${NODE_VER} as npminstall
 
 WORKDIR /opt
 
-COPY ./web/reactjs/package-lock.json /opt/package-lock.json
-COPY ./web/reactjs/package.json /opt/package.json
-COPY ./web/reactjs/webpack /opt/webpack
-COPY ./web/reactjs/.babelrc /opt/.babelrc
-COPY ./web/reactjs/images /opt/images
-COPY ./web/reactjs/src /opt/src
+ARG WEB_FRAMEWORK
 
-RUN npm install && npm audit fix && npm run build
+COPY ./web/${WEB_FRAMEWORK}/dep.sh ./dep.sh
+COPY ./web/${WEB_FRAMEWORK}/package.json ./package.json
+
+RUN ./dep.sh
+
+FROM node:${NODE_VER} as nodebuild
+
+WORKDIR /opt
+
+ARG WEB_FRAMEWORK
+
+COPY --from=npminstall /opt/node_modules ./node_modules
+COPY --from=npminstall /opt/package-lock.json ./package-lock.json
+COPY --from=npminstall /opt/package.json /opt/package.json
+COPY ./web/${WEB_FRAMEWORK}/webpack /opt/webpack
+COPY ./web/${WEB_FRAMEWORK}/.babelrc /opt/.babelrc
+COPY ./web/${WEB_FRAMEWORK}/images /opt/images
+COPY ./web/${WEB_FRAMEWORK}/src /opt/src
+
+RUN npm run build
 
 # Go build phase
 # Utilising a go packaging tool github.com/GeertJohan/go.rice
 # the web artefacts is packaged into a file name rice-box.go.
 # Go builder then generates a version for linux platform.
-FROM golang:1.13.3
+FROM golang:${GO_VER}
 
 WORKDIR /opt
 
@@ -44,10 +61,11 @@ COPY --from=nodebuild /opt/public ./web
 COPY ./go.mod ./go.mod
 COPY ./go.sum ./go.sum
 
+ARG APP_NAME
+
 RUN go get github.com/GeertJohan/go.rice/rice && \
     ./build/go-rice.sh && \
     go mod download && \
-    env GOOS=linux GOARCH=amd64 go build -o ./build/package/linux/hlsadmin ./cmd/hlsadmin && \
-    env GOOS=darwin GOARCH=amd64 go build -o ./build/package/macOS/hlsadmin ./cmd/hlsadmin && \
-    env GOOS=windows GOARCH=amd64 go build -o ./build/package/windows/hlsadmin.exe ./cmd/hlsadmin
-
+    env GOOS=linux GOARCH=amd64 go build -o ./build/package/linux/${APP_NAME} ./cmd/${APP_NAME} && \
+    env GOOS=darwin GOARCH=amd64 go build -o ./build/package/macOS/${APP_NAME} ./cmd/${APP_NAME} && \
+    env GOOS=windows GOARCH=amd64 go build -o ./build/package/windows/${APP_NAME}.exe ./cmd/${APP_NAME}

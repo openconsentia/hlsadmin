@@ -18,6 +18,11 @@ services:
             - hlsadmin_dev_network
 
     react:
+        build:
+            context: ../../
+            dockerfile: deployments/dev/react.dockerfile
+            args: 
+                node_ver: ${NODE_VER}
         image: ${REACT_IMAGE_NAME}:${IMAGE_TAG}
         container_name: react
         expose:
@@ -25,20 +30,32 @@ services:
         ports:
             - 3030:3030
         volumes:
-            - ../../web/reactjs/src:/opt/src
+            - ../../web/${WEB_FRAMEWORK}/src:/opt/src
+            - ../../web/${WEB_FRAMEWORK}/webpack:/opt/webpack
+            - ../../web/${WEB_FRAMEWORK}/.babelrc:/opt/.babelrc
+            - ../../web/${WEB_FRAMEWORK}/images:/opt/images
+            - ../..//web/${WEB_FRAMEWORK}/.eslintrc.json:/opt/.eslintrc.json
         networks:
             - hlsadmin_dev_network
 
     rest:
-        image: ${REST_IMAGE_NAME}:${IMAGE_TAG}
-        command: ["/usr/local/bin/hlsadmin","start","noui","-p","9000"]
+        image: golang:${GO_VER}
+        working_dir: /opt
+        command: ["./go-run.sh"]
         container_name: rest
         expose:
             - 9000
         ports:
             - 9000:9000
+        volumes: 
+            - ../../cmd:/opt/cmd
+            - ../../internal:/opt/internal
+            - ../../go.mod:/opt/go.mod
+            - ../../go.sum:/opt/go.sum
+            - ./go-run.sh:/opt/go-run.sh
         networks:
             - hlsadmin_dev_network
 
+# Replace network name 
 networks:
     hlsadmin_dev_network:

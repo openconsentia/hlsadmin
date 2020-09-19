@@ -14,15 +14,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-export REACT_IMAGE_NAME=paulwizviz/hlsadmin-dev-react
-export REST_IMAGE_NAME=paulwizviz/hlsadmin-dev-rest
-export IMAGE_TAG=dev
+. ./scripts/common.sh
+
+export REST_SERVER_NAME=gorest
 
 COMMAND="$1"
 
-function package() {
-    docker build -f ./build/package/dev/react.dockerfile -t ${REACT_IMAGE_NAME}:${IMAGE_TAG} .
-    docker build -f ./build/package/dev/rest.dockerfile -t ${REST_IMAGE_NAME}:${IMAGE_TAG} .
+function build() {
+    docker-compose -f ./deployments/dev/docker-compose.yaml build
 }
 
 function run() {
@@ -35,14 +34,24 @@ function stop(){
 
 function clean(){
     docker-compose -f ./deployments/dev/docker-compose.yaml down
+    docker rm -f $(docker ps -aq)
     docker rmi -f ${REACT_IMAGE_NAME}:${IMAGE_TAG}
-    docker rmi -f ${REST_IMAGE_NAME}:${IMAGE_TAG}
     docker rmi -f $(docker images --filter "dangling=true" -q)
 }
 
+message="Usage: $0 build | run | stop | clean"
+
+if [ "$#" -ne 1 ]; then
+    echo $message
+    exit 1
+fi
+
 case $COMMAND in
-    "package")
-        package
+    "build")
+        build
+        ;;
+    "clean")
+        clean
         ;;
     "run")
         run
@@ -50,10 +59,7 @@ case $COMMAND in
     "stop")
         stop
         ;;
-    "clean")
-        clean
-        ;;
     *)
-        echo "$0 [package | run | stop | clean ]"
+        echo $message
         ;;
 esac

@@ -12,15 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM node:13.10.1
+ARG node_ver
+
+FROM node:${node_ver}
 
 WORKDIR /opt
 
-COPY ./web/reactjs/package-lock.json /opt/package-lock.json
 COPY ./web/reactjs/package.json /opt/package.json
-COPY ./web/reactjs/webpack /opt/webpack
-COPY ./web/reactjs/.babelrc /opt/.babelrc
-COPY ./web/reactjs/images /opt/images
-COPY ./web/reactjs/src /opt/src
+COPY ./web/reactjs/dep.sh /opt/dep.sh
 
-RUN npm install && npm audit fix && npm test
+RUN /opt/dep.sh
+
+CMD ["npm","run","dev:run"]

@@ -18,14 +18,24 @@
 
 COMMAND="$1"
 
-native_build_image=hls_devkit/native_build_image:current
+native_build_image=${IMAGE_BASE_NAME}/native_build_image:current
 
 function packageContainer() {
-    docker build -f ./build/package/artefacts/container.dockerfile -t ${APP_IMAGE_NAME}:${APP_IMAGE_TAG} .
+    docker build -f ./build/package/artefacts/container.dockerfile \
+            --build-arg APP_NAME=${APP_NAME} \
+            --build-arg NODE_VER=${NODE_VER} \
+            --build-arg GO_VER=${GO_VER} \
+            --build-arg WEB_FRAMEWORK=${WEB_FRAMEWORK} \
+            -t ${APP_IMAGE_NAME}:${APP_IMAGE_TAG} .
 }
 
 function packageNative(){
-    docker build -f ./build/package/artefacts/native.dockerfile -t ${native_build_image} .
+    docker build -f ./build/package/artefacts/native.dockerfile \
+                --build-arg APP_NAME=${APP_NAME} \
+                --build-arg NODE_VER=${NODE_VER} \
+                --build-arg GO_VER=${GO_VER} \
+                --build-arg WEB_FRAMEWORK=${WEB_FRAMEWORK} \
+                -t ${native_build_image} .
     cleanNative
     id=$(docker create ${native_build_image})
     CONTAINER_ID="${id:0:12}"
@@ -35,7 +45,7 @@ function packageNative(){
     docker cp $CONTAINER_ID:/opt/build/package/macOS/ ./build/native
     mkdir -p ./build/native/windows
     docker cp $CONTAINER_ID:/opt/build/package/windows/ ./build/native
-    docker rm -f $CONTAINER_ID
+    docker rm -f $id
     docker rmi -f ${native_build_image}
 }
 
@@ -47,21 +57,29 @@ function cleanNative() {
 
 function cleanImages() {
     docker rmi -f ${APP_IMAGE_NAME}:${APP_IMAGE_TAG}
+    docker rmi -f ${test_build_image}
     docker rmi -f $(docker images --filter "dangling=true" -q)
 }
 
+message="$0 clean | container | native "
+
+if [ "$#" -ne 1 ]; then
+    echo $message
+    exit 1
+fi
+
 case $COMMAND in
-    "native")
-        packageNative
-        ;;
-    "container")
-        packageContainer
-        ;;
     "clean")
         cleanNative
         cleanImages
         ;;
+    "container")
+        packageContainer
+        ;;
+    "native")
+        packageNative
+        ;;
     *)
-        echo "$0 [ native | container | clean ]"
+        echo $message
         ;;
 esac

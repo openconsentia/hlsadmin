@@ -14,6 +14,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-export APP_IMAGE_NAME=hlsdevkit/hlsadmin-container
-export APP_IMAGE_TAG=current
+export IMAGE_BASE_NAME=openconsentia
 
+export APP_IMAGE_NAME=${IMAGE_BASE_NAME}/hlsadmin-container
+export APP_IMAGE_TAG=current
+export APP_NAME=goreact # This should match the basename ./cmd/<youur-choice>, out-of-the-box this is call goreact
+
+export REACT_IMAGE_NAME=${IMAGE_BASE_NAME}/hlsadmin-dev-react
+export REST_IMAGE_NAME=${IMAGE_BASE_NAME}/hlsadmin-dev-rest
+export IMAGE_TAG=dev
+
+export WEB_FRAMEWORK=reactjs
+
+export NODE_VER=13.10.1
+export GO_VER=1.13.3

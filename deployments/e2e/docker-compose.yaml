@@ -2,14 +2,18 @@ version: '3.4'
 
 services:
 
+    # This is an example to support container based
+    # tesing. Replace this with a version appropriate
+    # for your project.
     hlsadmin:
         image: ${APP_IMAGE_NAME}:${APP_IMAGE_TAG}
         container_name: hlsadmin
-        command: ["/opt/hlsadmin","start", "ui"]
+        command: ["/${APP_NAME}"]
         ports:
             - 80:80
         networks:
             - hlsadmin_e2e_network
 
+# Replace network name 
 networks:
     hlsadmin_e2e_network:

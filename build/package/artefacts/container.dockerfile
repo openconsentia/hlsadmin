@@ -15,24 +15,43 @@
 # node build phase
 # In this phase, we pull artefacts to build ReactJS webapp for
 # development
-FROM node:13.10.1 as nodebuild
+ARG NODE_VER
+ARG GO_VER
+
+FROM node:${NODE_VER} as npminstall
 
 WORKDIR /opt
 
-COPY ./web/reactjs/package-lock.json /opt/package-lock.json
-COPY ./web/reactjs/package.json /opt/package.json
-COPY ./web/reactjs/webpack /opt/webpack
-COPY ./web/reactjs/.babelrc /opt/.babelrc
-COPY ./web/reactjs/images /opt/images
-COPY ./web/reactjs/src /opt/src
+ARG WEB_FRAMEWORK
 
-RUN npm install && npm audit fix && npm run build
+COPY ./web/${WEB_FRAMEWORK}/dep.sh ./dep.sh
+COPY ./web/${WEB_FRAMEWORK}/package.json ./package.json
+
+RUN ./dep.sh
+
+FROM node:${NODE_VER} as nodebuild
+
+WORKDIR /opt
+
+ARG WEB_FRAMEWORK
+
+COPY --from=npminstall /opt/node_modules ./node_modules
+COPY --from=npminstall /opt/package-lock.json ./package-lock.json
+COPY --from=npminstall /opt/package.json /opt/package.json
+COPY ./web/${WEB_FRAMEWORK}/webpack /opt/webpack
+COPY ./web/${WEB_FRAMEWORK}/.babelrc /opt/.babelrc
+COPY ./web/${WEB_FRAMEWORK}/images /opt/images
+COPY ./web/${WEB_FRAMEWORK}/src /opt/src
+
+RUN npm run build
 
 # Go build phase
 # Utilising a go packaging tool github.com/GeertJohan/go.rice
 # the web artefacts is packaged into a file name rice-box.go.
 # Go builder then generates a version for linux platform.
-FROM golang:1.13.3 as gobuild
+FROM golang:${GO_VER} as gobuild
+
+ARG APP_NAME
 
 WORKDIR /opt
 
@@ -44,16 +63,21 @@ COPY --from=nodebuild /opt/public ./web
 COPY ./go.mod ./go.mod
 COPY ./go.sum ./go.sum
 
+# Replace app name {./cmd/goreact} here with name of your choice {./cmd/<your-choice>}
 RUN go get github.com/GeertJohan/go.rice/rice && \
     ./build/go-rice.sh && \
     go mod download && \
-    env CGO_ENABLED=0 env GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o ./build/package/container/hlsadmin ./cmd/hlsadmin
+    env CGO_ENABLED=0 env GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o ./build/package/container/${APP_NAME} ./cmd/${APP_NAME}
 
-# Pack linux artefact into a container
-FROM hyperledger/sawtooth-shell:chime
+# Pack linux artefact into scratch container
+FROM scratch
 
-ENV CONTAINER="container"
+ARG APP_NAME
 
-COPY --from=gobuild /opt/build/package/container/hlsadmin /opt/hlsadmin
+ENV app_name_var=$APP_NAME
 
-CMD ["/opt/hlsadmin", "start", "ui"]
+# Replace app name {goreact} here with name of your choice
+COPY --from=gobuild /opt/build/package/container/${app_name_var} /${app_name_var}
+
+# Replace app name {goreact} here with name of your choice
+CMD ["/${app_name_var}"]
