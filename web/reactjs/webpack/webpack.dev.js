@@ -1,4 +1,4 @@
-const baseConfig = require('./webpack.base');
+const commonConfig = require('./webpack.common');
 const merge = require('webpack-merge');
 const ErrorOverlayPlugin = require('error-overlay-webpack-plugin');
 
@@ -29,4 +29,4 @@ const devConfig = {
     devtool: 'cheap-module-source-map'
 }
 
-module.exports = merge.smart(baseConfig, devConfig)
+module.exports = merge.smart(commonConfig, devConfig)
