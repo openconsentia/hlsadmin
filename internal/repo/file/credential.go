@@ -15,7 +15,7 @@
 package file
 
 import (
-	"hls-devkit/hlsadmin/internal/authuser"
+	"openconsentia/hlsadmin/internal/authuser"
 )
 
 // actual credential repo

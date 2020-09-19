@@ -16,8 +16,8 @@ package cli
 
 import (
 	"fmt"
-	"hls-devkit/hlsadmin/internal/repo/file"
 	"log"
+	"openconsentia/hlsadmin/internal/repo/file"
 	"os"
 
 	"github.com/spf13/cobra"

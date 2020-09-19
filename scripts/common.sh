@@ -18,7 +18,7 @@ export IMAGE_BASE_NAME=openconsentia
 
 export APP_IMAGE_NAME=${IMAGE_BASE_NAME}/hlsadmin-container
 export APP_IMAGE_TAG=current
-export APP_NAME=hlsadmin # This should match the basename ./cmd/<youur-choice>, out-of-the-box this is call goreact
+export APP_NAME=hlsadmin
 
 export REACT_IMAGE_NAME=${IMAGE_BASE_NAME}/hlsadmin-dev-react
 export REST_IMAGE_NAME=${IMAGE_BASE_NAME}/hlsadmin-dev-rest

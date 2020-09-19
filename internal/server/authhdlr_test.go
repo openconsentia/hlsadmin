@@ -17,10 +17,10 @@ package server
 import (
 	"bytes"
 	"encoding/json"
-	"hls-devkit/hlsadmin/internal/authuser"
-	"hls-devkit/hlsadmin/internal/repo/file"
 	"net/http"
 	"net/http/httptest"
+	"openconsentia/hlsadmin/internal/authuser"
+	"openconsentia/hlsadmin/internal/repo/file"
 	"testing"
 )
 
