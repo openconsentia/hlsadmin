@@ -13,7 +13,7 @@
 package yaml
 
 import (
-	"hls-devkit/hlsadmin/internal/configapp"
+	"openconsentia/hlsadmin/internal/configapp"
 
 	goyaml "gopkg.in/yaml.v2"
 )

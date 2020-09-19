@@ -15,11 +15,11 @@
 package server
 
 import (
-	"hls-devkit/hlsadmin/internal/authuser"
-	"hls-devkit/hlsadmin/internal/repo/file"
-	jsonserializer "hls-devkit/hlsadmin/internal/serializer/json"
 	"io/ioutil"
 	"net/http"
+	"openconsentia/hlsadmin/internal/authuser"
+	"openconsentia/hlsadmin/internal/repo/file"
+	jsonserializer "openconsentia/hlsadmin/internal/serializer/json"
 	"os"
 )
 

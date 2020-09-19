@@ -1,4 +1,4 @@
-module hls-devkit/hlsadmin
+module openconsentia/hlsadmin
 
 go 1.13
 

@@ -16,7 +16,7 @@ package json
 
 import (
 	jsonstl "encoding/json"
-	"hls-devkit/hlsadmin/internal/authuser"
+	"openconsentia/hlsadmin/internal/authuser"
 )
 
 type seralizerSvc struct{}

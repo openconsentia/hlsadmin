@@ -17,9 +17,9 @@ package main
 import (
 	"flag"
 	"fmt"
-	"goweb/internal/server"
 	"log"
 	"net/http"
+	"openconsentia/hlsadmin/internal/server"
 
 	"github.com/gorilla/mux"
 )
@@ -32,7 +32,6 @@ func main() {
 	router := mux.NewRouter()
 
 	server.RESTRun(router)
-	server.RunWeb(router)
 	log.Printf("Starting with UI on port %v", *portPtr)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf("0.0.0.0:%v", *portPtr), router))
 

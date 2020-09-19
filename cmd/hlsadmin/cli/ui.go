@@ -16,9 +16,9 @@ package cli
 
 import (
 	"fmt"
-	"hls-devkit/hlsadmin/internal/server"
 	"log"
 	"net/http"
+	"openconsentia/hlsadmin/internal/server"
 
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"

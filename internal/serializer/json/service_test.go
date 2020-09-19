@@ -15,7 +15,7 @@
 package json
 
 import (
-	"hls-devkit/hlsadmin/internal/authuser"
+	"openconsentia/hlsadmin/internal/authuser"
 	"reflect"
 	"testing"
 )

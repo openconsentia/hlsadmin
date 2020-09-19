@@ -2,7 +2,7 @@ package yaml
 
 import (
 	"fmt"
-	"hls-devkit/hlsadmin/internal/configapp"
+	"openconsentia/hlsadmin/internal/configapp"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
