@@ -1,3 +1,0 @@
-# Build process
-
-TO DO
